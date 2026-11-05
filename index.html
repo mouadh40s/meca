@@ -43,6 +43,17 @@ button{font:inherit;color:inherit}
 .top .back{border:0;background:var(--surface);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none;border:1px solid var(--line)}
 .top .back[hidden]{display:none}
 .top h1{font:700 22px/1 var(--display);letter-spacing:.02em;margin:0;text-transform:uppercase;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbtn{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.sbtn svg,.sbox svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+.sbox{display:flex;align-items:center;gap:8px;margin:12px 0 14px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--muted)}
+.sbox input{flex:1;border:0;background:transparent;font:16px var(--body);color:var(--ink);padding:12px 0;outline:none;min-width:0}
+.sres{display:flex;flex-direction:column;gap:8px}
+.sr{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:11px 13px}
+.sr b{display:block;margin:2px 0 4px;font-size:15px}
+.sk{font:500 11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.sn{display:block;font-size:13.5px;line-height:1.45;color:var(--muted)}
+mark{background:color-mix(in srgb,var(--accent) 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+mark.hit{outline:2px solid var(--accent)}
 .top .xp{font:500 12px var(--mono);color:var(--muted);background:var(--surface);border:1px solid var(--line);padding:4px 8px;border-radius:999px;white-space:nowrap}
 main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:16px 16px calc(96px + env(safe-area-inset-bottom))}
 .tabs{position:fixed;bottom:0;left:0;right:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
@@ -327,6 +338,7 @@ h3{font:700 21px/1.15 var(--display);text-transform:uppercase;letter-spacing:.02
   <header class="top">
     <button class="back" id="back" hidden aria-label="Retour"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <h1 id="title">Atelier Méca</h1>
+    <a class="sbtn" href="#recherche" aria-label="Rechercher"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></a>
     <span class="xp" id="xp">0 XP</span>
   </header>
   <main id="main"></main>
@@ -3485,6 +3497,1216 @@ GLOSSARY.push(
   ['Condenseur', 'Échangeur de clim qui rejette la chaleur à l\'extérieur.', 'confort']
 );
 
+/* ===== MOTEUR : compléments ===== */
+insLessons('moteur', '4temps', [
+  { id: 'diagramme', title: 'Le diagramme pression-volume', min: 13, deep: true,
+    goals: ['Comprendre comment on représente le travail d\'un moteur sur un graphique', 'Connaître les lois des gaz utiles en mécanique', 'Calculer une pression de fin de compression', 'Comprendre pourquoi le diagramme réel diffère du théorique'],
+    body: `
+<h3>Mesurer le travail d'un moteur</h3>
+<p>En physique, un <strong>travail</strong> (en joules) est une force multipliée par la distance sur laquelle elle s'exerce : <strong>W = F × d</strong>. Dans un moteur, la force vient de la pression des gaz sur le piston : <strong>F = p × S</strong> (pression × surface du piston). Et la distance, c'est la course.</p>
+<p>Pour visualiser ce qui se passe dans un cylindre pendant un cycle, les motoristes tracent un graphique :</p>
+<ul>
+<li>horizontalement, le <strong>volume</strong> du cylindre (donc la position du piston, du PMH à gauche au PMB à droite) ;</li>
+<li>verticalement, la <strong>pression</strong> des gaz.</li>
+</ul>
+<p>Le cycle forme une boucle fermée. Le résultat important : <strong>l'aire (la surface) de cette boucle représente le travail fourni par le moteur à chaque cycle</strong>.</p>
+<div class="note ana">Imagine que tu pousses une voiture en panne : plus tu pousses fort (la hauteur sur le graphique) et longtemps (la largeur), plus tu fournis de travail. La surface du rectangle « force × distance » représente ton effort total. Le diagramme du moteur, c'est la même idée avec une forme plus compliquée.</div>
+<h3>Le cycle théorique</h3>
+<p>Dans un moteur idéal (soupapes instantanées, combustion instantanée, aucun échange de chaleur), on aurait :</p>
+<ol class="steps">
+<li><strong>Admission</strong> : le volume augmente à pression atmosphérique constante (ligne horizontale).</li>
+<li><strong>Compression</strong> : le volume diminue, la pression monte en courbe.</li>
+<li><strong>Combustion</strong> : au PMH, la pression bondit à volume constant (ligne verticale).</li>
+<li><strong>Détente</strong> : le volume augmente, la pression redescend en courbe. C'est là qu'est produit le travail.</li>
+<li><strong>Échappement</strong> : au PMB, la pression retombe, puis le piston chasse les gaz à pression atmosphérique.</li>
+</ol>
+<p>Le <strong>travail utile</strong> = l'aire de la boucle de détente moins l'aire de la boucle de compression (le travail que le moteur doit dépenser pour comprimer).</p>
+<h3>Les lois des gaz</h3>
+<p>Quatre lois de physique décrivent le comportement d'un gaz enfermé. Les deux premières sont les plus utiles :</p>
+<table class="tbl"><thead><tr><th>Loi</th><th>Ce qu'elle dit</th><th>Exemple</th></tr></thead><tbody>
+<tr><td>Mariotte (Boyle-Mariotte)</td><td>À température constante, pression × volume = constante. Si on divise le volume par 2, la pression double.</td><td>Une seringue bouchée : on l'enfonce à moitié, la pression double</td></tr>
+<tr><td>Compression adiabatique (Laplace)</td><td>Si la compression est rapide (sans échange de chaleur, ce qui est le cas dans un moteur), le gaz chauffe et la pression monte encore plus vite que selon Mariotte</td><td>La pompe à vélo qui chauffe</td></tr>
+<tr><td>Charles</td><td>À volume constant, la pression augmente avec la température</td><td>La combustion : la pression bondit quand la température monte</td></tr>
+<tr><td>Gay-Lussac</td><td>À pression constante, le volume augmente avec la température</td><td>L'air chaud se dilate, d'où l'intérêt de l'échangeur du turbo</td></tr>
+</tbody></table>
+<div class="note ex">Un cylindre de 400 cm³ de cylindrée unitaire avec une chambre de 40 cm³ : volume piston en bas 440 cm³, en haut 40 cm³, taux de compression 11:1. Si la compression se faisait à température constante (Mariotte), la pression de fin de compression serait 1 bar × 11 = <strong>11 bars</strong>. En réalité, la compression est rapide et l'air chauffe : on mesure plutôt <strong>12 à 16 bars</strong> au compressiomètre sur un moteur essence en bon état. Sur un diesel (16:1 et plus), on mesure environ <strong>25 à 35 bars</strong>, et la pression en fin de combustion dépasse 100 à 180 bars.</div>
+<div class="note why">C'est exactement ce que mesure un <strong>test de compression</strong> : on visse un manomètre à la place de la bougie (ou de l'injecteur), on fait tourner le moteur au démarreur, et on compare les cylindres. Un écart de plus de 10 à 15 % entre deux cylindres, ou une valeur basse, indique un problème d'étanchéité : segments, soupapes ou joint de culasse.</div>
+<h3>Le diagramme réel</h3>
+<p>Dans un vrai moteur, la boucle est plus petite et arrondie :</p>
+<ul>
+<li>à l'<strong>admission</strong>, la pression est un peu inférieure à la pression atmosphérique : le piston aspire plus vite que l'air n'arrive ;</li>
+<li>la <strong>compression</strong> part donc d'une pression plus basse ;</li>
+<li>la <strong>combustion</strong> n'est pas instantanée : pendant qu'elle se propage, le piston a déjà commencé à redescendre, donc le pic de pression est plus bas et arrondi ;</li>
+<li>pendant la <strong>détente</strong>, les gaz perdent de la chaleur dans les parois ;</li>
+<li>à l'<strong>échappement</strong>, il reste une contre-pression : le piston doit pousser les gaz.</li>
+</ul>
+<p>Résultat : le travail utile diminue et le travail perdu augmente. Les solutions, tu les connais maintenant : ouvrir les soupapes plus tôt et les fermer plus tard (épure de distribution), et allumer en avance (avance à l'allumage). C'est le lien direct entre le diagramme et les réglages du moteur.</p>`,
+    keys: ['Travail = force × distance ; force = pression × surface', 'Diagramme pression-volume : l\'aire de la boucle = travail du cycle', 'Mariotte : p × V = constante ; compression rapide = échauffement', 'Compression mesurée : ≈ 12–16 bars essence, 25–35 bars diesel ; écart > 10–15 % entre cylindres = défaut', 'Diagramme réel plus petit → épure de distribution et avance à l\'allumage'] }
+]);
+
+insLessons('moteur', 'pieces', [
+  { id: 'constitution', title: 'Bloc, piston, bielle, vilebrequin : la conception', min: 15, deep: true,
+    goals: ['Connaître les différents types de blocs et de chemises', 'Comprendre comment on gère la dilatation du piston', 'Connaître les coussinets et ce que veut dire « couler une bielle »', 'Comprendre les cotes de réparation et l\'effet d\'un surfaçage de culasse'],
+    body: `
+<h3>Le bloc-cylindres : les exigences</h3>
+<p>Le bloc doit être indéformable malgré des pressions énormes, guider parfaitement les pistons, évacuer la chaleur et être le plus léger possible. Ses qualités géométriques sont très précises :</p>
+<ul>
+<li>les paliers du vilebrequin doivent être parfaitement alignés : cette ligne invisible s'appelle la <strong>ligne d'arbre</strong> ;</li>
+<li>chaque cylindre doit être perpendiculaire à la ligne d'arbre et au <strong>plan de joint</strong> (la face sur laquelle s'appuie la culasse).</li>
+</ul>
+<p>Matériaux : la <strong>fonte</strong> (dure, résistante à l'usure, bonne conductrice de chaleur, mais lourde) ou l'<strong>alliage d'aluminium</strong> (léger, excellent conducteur de chaleur, mais trop tendre pour servir directement de cylindre). Les cylindres sont alésés, rectifiés, puis <strong>rodés</strong> : on crée de fines rayures croisées (le « quadrillage ») qui retiennent l'huile sur la paroi.</p>
+<h3>Les trois types de cylindres</h3>
+<table class="tbl"><thead><tr><th>Type</th><th>Principe</th><th>Réparation</th></tr></thead><tbody>
+<tr><td>Alésage direct</td><td>Les cylindres sont usinés directement dans le bloc en fonte : une seule pièce</td><td>En cas d'usure, on réalèse à une cote supérieure et on monte des pistons plus gros (cotes de réparation)</td></tr>
+<tr><td>Chemises sèches</td><td>Un tube fin (souvent en fonte) emmanché ou coulé dans le bloc, sans contact avec le liquide de refroidissement. Très courant sur les blocs aluminium modernes</td><td>Remplacement difficile (montage serré) ; sur beaucoup de moteurs, impossible</td></tr>
+<tr><td>Chemises humides</td><td>La chemise forme elle-même la paroi du circuit d'eau : le liquide la touche directement</td><td>Remplacement facile, mais l'étanchéité en bas (joints) et en haut (le <strong>dépassement</strong> de chemise au-dessus du plan de joint, mesuré au centième) doit être parfaite</td></tr>
+</tbody></table>
+<p>Certains moteurs récents n'ont plus de chemise : l'aluminium du cylindre reçoit un revêtement très dur projeté (par exemple à plasma), plus léger et meilleur conducteur.</p>
+<h3>La culasse</h3>
+<p>Le point le plus chaud du moteur : la chambre de combustion. La culasse est presque toujours en alliage d'aluminium pour évacuer vite la chaleur. Elle contient les <strong>chapelles</strong> (conduits d'admission et d'échappement), les chambres de combustion (souvent hémisphériques ou en toit, parfois en partie creusées dans le piston), un réseau de canaux de refroidissement autour des soupapes et des bougies, et des passages d'huile.</p>
+<div class="note ex">Une culasse qui a chauffé se voile : son plan de joint n'est plus plat. On la contrôle à la règle et aux cales (souvent moins de 0,05 mm de défaut admis) et on peut la <strong>surfacer</strong> (raboter de quelques dixièmes). Mais attention : enlever de la matière réduit le volume de la chambre, donc <strong>augmente le taux de compression</strong>. Au-delà de la limite constructeur, il faut une culasse neuve ou un joint plus épais, sinon risque de cliquetis, voire de contact soupapes-pistons.</div>
+<h3>Le piston et la dilatation</h3>
+<p>Le piston est en alliage d'aluminium : léger (il change de sens des centaines de fois par seconde) et bon conducteur. Mais l'aluminium se dilate environ deux fois plus que la fonte du cylindre. Il faut donc qu'il ait un jeu suffisant à chaud sans claquer à froid. Les solutions :</p>
+<ul>
+<li>la <strong>tête</strong>, la plus chaude, a un diamètre légèrement inférieur au reste ;</li>
+<li>la <strong>jupe</strong> (la partie qui guide) est usinée légèrement <strong>ovale</strong> à froid : en chauffant, elle se dilate surtout dans le sens de l'axe et devient ronde ;</li>
+<li>des inserts en acier peuvent être coulés dans la jupe pour limiter la dilatation ;</li>
+<li>l'axe du piston est souvent <strong>désaxé</strong> de un ou deux millimètres : le piston bascule déjà d'un côté avant le pic de pression, ce qui évite qu'il claque contre la paroi au PMH (le bruit appelé « claquement de piston »).</li>
+</ul>
+<p>Les <strong>segments</strong> sont en fonte ou en acier, souvent chromés. On en trouve trois : le <strong>segment de feu</strong> (le premier, le plus exposé), le <strong>segment d'étanchéité intermédiaire</strong> et le <strong>segment racleur</strong>. Leur coupe (la fente) est décalée de 120° d'un segment à l'autre au montage pour ne pas laisser de chemin aux gaz.</p>
+<h3>La bielle et les coussinets</h3>
+<p>La bielle est forgée dans un acier mi-dur, avec une section en « I » ou en « H » : légère mais rigide (elle ne doit pas fléchir, on dit « flamber »). Son extrémité basse, la <strong>tête de bielle</strong>, est en deux parties (le corps et le chapeau, boulonnés) pour pouvoir l'installer sur le vilebrequin.</p>
+<p>Entre la tête de bielle et le maneton, on place des <strong>coussinets</strong> : des demi-bagues d'acier recouvertes d'une fine couche de métal antifriction (le <strong>régule</strong>, un alliage tendre à base d'étain, de plomb, de cuivre ou d'aluminium). Les mêmes coussinets se trouvent dans les paliers du vilebrequin.</p>
+<div class="note why">Pourquoi un métal tendre ? Si une particule passe dans l'huile, elle s'incruste dans le régule au lieu de rayer le vilebrequin, beaucoup plus cher. Et si la lubrification manque, c'est le coussinet (pièce bon marché) qui s'use. Mais quand le frottement devient trop important, le régule, qui fond autour de 300 à 400 °C, se met à fondre : le jeu devient énorme et la bielle cogne. C'est ce qu'on appelle <strong>couler une bielle</strong> : un cognement sourd et régulier qui suit le régime. Il faut arrêter le moteur tout de suite.</div>
+<h3>Le vilebrequin</h3>
+<p>Il est forgé (acier) ou moulé (fonte à graphite sphéroïdal), traité pour durcir ses surfaces. On y distingue les <strong>tourillons</strong> (les parties qui tournent dans les paliers du bloc, sur l'axe), les <strong>manetons</strong> (décalés, où s'attachent les bielles), les <strong>bras</strong> qui les relient et les <strong>contrepoids</strong>. Des canaux percés à l'intérieur amènent l'huile des tourillons vers les manetons.</p>
+<p>Le vilebrequin est maintenu dans le sens de la longueur par des <strong>cales de jeu latéral</strong> (ou flasques) : on contrôle ce jeu axial au comparateur. Usé, un vilebrequin peut être <strong>rectifié</strong> à une cote inférieure (on enlève quelques dixièmes) et monté avec des coussinets plus épais, dits « cote réparation ».</p>`,
+    keys: ['Ligne d\'arbre alignée, cylindres perpendiculaires au plan de joint', 'Alésage direct, chemises sèches, chemises humides (dépassement à contrôler)', 'Surfacer une culasse augmente le taux de compression', 'Piston : jupe ovale, axe désaxé, 3 segments décalés à 120°', 'Coussinets en régule ; couler une bielle = le régule fond, cognement sourd'] }
+]);
+
+insLessons('moteur', 'soupapes', [
+  { id: 'distribution-variable', title: 'Distribution et levée variables', min: 12, deep: true,
+    goals: ['Comprendre pourquoi une épure fixe est un compromis', 'Comprendre le fonctionnement d\'un déphaseur à palettes', 'Connaître les stratégies selon le régime', 'Comprendre la levée variable qui remplace le papillon'],
+    body: `
+<h3>Le problème de l'épure fixe</h3>
+<p>Les avances et retards d'une épure de distribution sont calculés pour une vitesse précise des gaz dans les conduits, donc pour un régime précis. Exemple typique : un retard à la fermeture de l'admission (RFA) de 50 à 70° est idéal vers 5 000 tr/min, où l'air arrive vite et continue d'entrer longtemps après le PMB. Mais à 1 000 tr/min, l'air est lent : pendant ce retard, le piston qui remonte <strong>refoule</strong> une partie du mélange vers l'admission. Le moteur manque de couple à bas régime.</p>
+<p>Avec une épure fixe, le constructeur doit choisir : un moteur souple à bas régime ou puissant à haut régime. La <strong>distribution variable</strong> supprime ce choix.</p>
+<h3>Le déphaseur à palettes</h3>
+<p>Le système le plus répandu modifie le <strong>calage</strong> de l'arbre à cames par rapport à sa poulie, en roulant.</p>
+<ul>
+<li>La poulie (entraînée par la courroie ou la chaîne) contient un rotor à <strong>palettes</strong> fixé au bout de l'arbre à cames. Entre les palettes et le boîtier, il y a des chambres remplies d'huile moteur.</li>
+<li>Une <strong>électrovanne</strong> pilotée par le calculateur envoie de l'huile sous pression d'un côté ou de l'autre des palettes. Le rotor tourne de quelques dizaines de degrés par rapport à la poulie : l'arbre à cames est <strong>avancé</strong> ou <strong>retardé</strong>.</li>
+<li>Pour tenir une position intermédiaire, le calculateur alterne très vite alimentation et coupure de l'électrovanne (commande en <strong>rapport cyclique</strong>, RCO).</li>
+<li>Un <strong>capteur de position d'arbre à cames</strong> vérifie le déphasage réellement obtenu.</li>
+<li>Un <strong>pion de verrouillage</strong> bloque le déphaseur au démarrage, quand la pression d'huile n'est pas encore là, pour éviter qu'il claque.</li>
+</ul>
+<p>On peut avoir un déphaseur sur l'admission seulement, ou sur l'admission et l'échappement.</p>
+<h3>Les stratégies selon la situation</h3>
+<table class="tbl"><thead><tr><th>Situation</th><th>Réglage</th><th>Pourquoi</th></tr></thead><tbody>
+<tr><td>Ralenti</td><td>Admission retardée, échappement fermé tôt : croisement minimal</td><td>Peu de gaz brûlés restent dans le cylindre : ralenti stable</td></tr>
+<tr><td>Couple maximal (bas et moyen régime)</td><td>Admission ouverte tôt et refermée tôt</td><td>Remplissage maximal sans refoulement du mélange</td></tr>
+<tr><td>Puissance (haut régime)</td><td>Admission refermée tard, échappement ouvert tard</td><td>On profite de l'inertie des gaz rapides</td></tr>
+<tr><td>Charge partielle</td><td>Croisement important</td><td>Une partie des gaz d'échappement reste ou revient dans le cylindre : c'est une <strong>EGR interne</strong>, qui baisse les NOx et les pertes par pompage, sans vanne EGR</td></tr>
+</tbody></table>
+<div class="note ex">Codes défaut typiques : P0010 à P0014 (circuit ou position du déphaseur d'admission), P0016 (corrélation vilebrequin / arbre à cames). Causes fréquentes : huile trop vieille ou de mauvaise viscosité, niveau bas, filtre de l'électrovanne bouché, chaîne de distribution allongée. Avant de changer un déphaseur, on vérifie toujours l'huile.</div>
+<h3>La levée variable</h3>
+<p>Plus loin encore : faire varier <strong>de combien</strong> la soupape s'ouvre, et pas seulement quand. Sur les systèmes à levée continue (Valvetronic de BMW, système de PSA et BMW sur le moteur EP6, MultiAir de Fiat), un <strong>arbre à cames intermédiaire</strong> et des leviers sont interposés entre la came et le linguet de la soupape. Un petit moteur électrique, par une vis sans fin, fait pivoter cet arbre intermédiaire et change la course transmise.</p>
+<ul>
+<li>La levée peut varier de quelques dixièmes de millimètre (au ralenti) à environ 9 à 10 mm (pleine charge).</li>
+<li>Le passage du minimum au maximum prend environ 0,3 seconde, comme un papillon motorisé.</li>
+<li>Le calculateur dose l'air <strong>directement par la levée des soupapes</strong> : le boîtier papillon reste grand ouvert (il ne sert plus qu'en secours).</li>
+</ul>
+<div class="note why">L'intérêt : supprimer les <strong>pertes par pompage</strong>. Avec un papillon presque fermé, le moteur aspire à travers un petit trou et dépense de l'énergie juste pour créer ce vide. Avec la levée variable, l'air entre librement et c'est la soupape qui limite sa quantité. Gain de consommation à faible charge et réponse plus vive à l'accélérateur.</div>
+<p>Pour aller plus loin, cherche « commande desmodromique » (Ducati : une came ouvre la soupape et une autre la referme, sans ressort) et « moteur sans arbre à cames » (Koenigsegg Freevalve : soupapes actionnées par des vérins pneumatiques pilotés).</p>`,
+    keys: ['Une épure fixe n\'est optimale qu\'à un régime', 'Déphaseur à palettes : électrovanne + huile moteur, commande en rapport cyclique, capteur de position', 'Ralenti : croisement faible ; couple : admission tôt ; puissance : admission tard ; charge partielle : EGR interne', 'Levée variable : la soupape dose l\'air, le papillon reste ouvert, moins de pertes par pompage'] }
+]);
+
+insLessons('moteur', 'equilibrage', [
+  { id: '3cylindres', title: 'Le moteur 3 cylindres', min: 9, deep: true,
+    goals: ['Comprendre pourquoi les 3 cylindres se sont généralisés', 'Calculer l\'intervalle entre deux explosions', 'Comprendre leurs défis (vibrations) et les solutions', 'Comprendre le désaxage du vilebrequin'],
+    body: `
+<h3>Le retour du 3 cylindres</h3>
+<p>Longtemps réservé aux toutes petites voitures, le 3 cylindres équipe aujourd'hui une grande partie des citadines et compactes (PureTech 1.2 de Stellantis, TCe de Renault, TSI 1.0 de Volkswagen, EcoBoost 1.0 de Ford, et même des BMW et Mini). La raison principale : les normes de CO₂.</p>
+<ul>
+<li>Moins de cylindres = moins de pièces en mouvement = <strong>moins de frottements</strong>.</li>
+<li>Pour une même cylindrée, chaque cylindre est plus gros : <strong>moins de surface de parois</strong> par litre, donc moins de chaleur perdue.</li>
+<li>Moteur plus court et plus léger (souvent 20 à 25 kg de moins qu'un 4 cylindres équivalent).</li>
+<li>Associé à un turbo (downsizing), un 1.2 de 3 cylindres remplace un 1.6 de 4 cylindres atmosphérique.</li>
+</ul>
+<h3>Une explosion tous les 240°</h3>
+<p>Le cycle dure toujours 720°. Avec 3 cylindres : 720 ÷ 3 = <strong>240°</strong> entre deux explosions. Les manetons du vilebrequin sont donc décalés de 120° les uns des autres. Les ordres d'allumage possibles sont <strong>1-2-3</strong> ou <strong>1-3-2</strong>.</p>
+<table class="tbl"><thead><tr><th>Cylindres</th><th>Intervalle entre explosions</th><th>Conséquence</th></tr></thead><tbody>
+<tr><td>3</td><td>720 ÷ 3 = 240°</td><td>Il y a des moments où aucun piston ne pousse : le moteur est moins régulier</td></tr>
+<tr><td>4</td><td>720 ÷ 4 = 180°</td><td>Une explosion par demi-tour</td></tr>
+<tr><td>5</td><td>720 ÷ 5 = 144°</td><td>Les temps moteurs se chevauchent (son caractéristique des 5 cylindres Audi)</td></tr>
+<tr><td>6</td><td>720 ÷ 6 = 120°</td><td>Chevauchement permanent : très grande douceur</td></tr>
+</tbody></table>
+<h3>Le défi : les vibrations</h3>
+<p>Un 3 cylindres en ligne a un défaut d'équilibre naturel : les forces des pistons ne s'annulent pas d'un bout à l'autre du moteur, ce qui crée un mouvement de bascule (un « couple de basculement »). Ajoute à ça l'irrégularité des explosions espacées de 240°. Les solutions utilisées :</p>
+<ul>
+<li>un <strong>arbre d'équilibrage</strong> qui tourne en sens inverse du vilebrequin avec des masselottes, souvent entraîné par des pignons à denture droite (pas de poussée axiale) et une liaison élastique qui amortit les chocs de denture ;</li>
+<li>un <strong>volant moteur bimasse</strong> qui filtre les à-coups avant la boîte ;</li>
+<li>des <strong>supports moteur</strong> étudiés, parfois actifs ;</li>
+<li>le turbo, qui rend le couple plus « plein » à bas régime.</li>
+</ul>
+<h3>Le désaxage du vilebrequin</h3>
+<p>Sur certains moteurs (comme le PureTech), l'axe des cylindres ne passe pas exactement par l'axe du vilebrequin : il est décalé de quelques millimètres. Au moment où la pression de combustion est maximale (juste après le PMH), la bielle est presque alignée avec l'axe du cylindre. Le piston est donc moins poussé de travers contre la paroi : <strong>moins de frottement, moins d'usure en ovale des cylindres</strong>, meilleur rendement. Le léger surplus de frottement pendant les phases de montée (compression, échappement), où les forces sont faibles, est un prix acceptable.</p>
+<div class="note ex">Fiche réelle (Citroën C3 1.2 PureTech 110, moteur EB2ADT) : 3 cylindres, 1 199 cm³, alésage 75 mm, course 90,5 mm (moteur « longue course » : la course est plus grande que l'alésage, ce qui favorise le couple à bas régime), 12 soupapes, 2 arbres à cames, 81 kW (110 ch) à 5 500 tr/min, 205 N·m dès 1 750 tr/min. La version atmosphérique du même moteur (82 ch) ne fait que 118 N·m à 2 750 tr/min : le turbo presque double le couple.</div>
+<div class="note warn">Une particularité à connaître sur certains 3 cylindres PureTech de première génération : la courroie de distribution baigne dans l'huile. Elle peut se dégrader prématurément, et des débris boucher la crépine de la pompe à huile. Le constructeur a réduit les intervalles de remplacement et étendu des garanties. C'est un bon exemple de l'intérêt de chercher les pannes connues d'un code moteur.</div>`,
+    keys: ['3 cylindres : moins de frottements et de pertes thermiques, downsizing', '720 ÷ 3 = 240° entre explosions ; ordre 1-2-3 ou 1-3-2', 'Vibrations : arbre d\'équilibrage contrarotatif, volant bimasse', 'Désaxage du vilebrequin : moins de frottement piston/cylindre en détente'] }
+]);
+
+insLessons('moteur', 'puissance', [
+  { id: 'caracteristiques', title: 'Lire les caractéristiques d\'un moteur', min: 11, deep: true,
+    goals: ['Lire les courbes de couple, puissance et consommation', 'Comprendre moteur carré, supercarré et longue course', 'Calculer une puissance spécifique', 'Lire une fiche technique réelle avec ses réglages de distribution'],
+    body: `
+<h3>Les trois courbes caractéristiques</h3>
+<p>Sur un banc d'essai, on fait tourner le moteur à pleine charge à différents régimes et on mesure son couple. On en déduit trois courbes, tracées en fonction du régime (en tr/min) :</p>
+<ul>
+<li>la <strong>courbe de couple</strong> : elle monte, atteint un maximum puis redescend. Un moteur turbo moderne a souvent un « plateau » : couple maximal constant sur une large plage (par exemple de 1 750 à 3 500 tr/min) ;</li>
+<li>la <strong>courbe de puissance</strong> : puisque puissance = couple × régime, elle continue à monter après le couple maximal, tant que le couple ne chute pas trop vite. Elle atteint son maximum plus haut dans les tours ;</li>
+<li>la <strong>courbe de consommation spécifique</strong> (en g/kWh) : elle forme un creux. Le régime où elle est la plus basse est celui du meilleur rendement, souvent proche du régime de couple maximal.</li>
+</ul>
+<div class="note why">Pourquoi conduire « dans le couple » ? Entre le régime de couple maximal et le régime de puissance maximale se trouve la <strong>plage d'utilisation</strong> du moteur : c'est là qu'il reprend le mieux. En dessous du couple maximal, il « peine » ; au-dessus de la puissance maximale, il s'essouffle. Pour une conduite économique, on reste juste au-dessus du régime de couple maximal en passant les rapports tôt.</div>
+<h3>Le rapport course/alésage</h3>
+<table class="tbl"><thead><tr><th>Type</th><th>Définition</th><th>Caractère</th></tr></thead><tbody>
+<tr><td>Moteur carré</td><td>Course = alésage</td><td>Compromis</td></tr>
+<tr><td>Moteur supercarré</td><td>Course &lt; alésage (gros piston, course courte)</td><td>Le piston va moins vite à régime égal : le moteur peut tourner très haut. Grandes soupapes possibles. Typique des moteurs sportifs et de moto</td></tr>
+<tr><td>Moteur longue course</td><td>Course &gt; alésage</td><td>Bras de levier plus long sur le vilebrequin : bon couple à bas régime, chambre de combustion compacte (meilleur rendement). Typique des diesels et des moteurs modernes économiques</td></tr>
+</tbody></table>
+<div class="note ex">La <strong>vitesse moyenne du piston</strong> limite le régime : Vm = 2 × course × régime ÷ 60. Avec une course de 80 mm à 6 000 tr/min : 2 × 0,08 × 6 000 ÷ 60 = 16 m/s. Au-delà d'environ 20 à 25 m/s, l'usure et les forces d'inertie deviennent excessives. Un moteur de Formule 1 (course d'environ 40 mm) tournait à près de 20 000 tr/min pour la même vitesse de piston qu'un diesel à 4 500.</div>
+<h3>La puissance spécifique</h3>
+<p>C'est la puissance divisée par la cylindrée, en kW par litre (ou ch par litre). Elle permet de comparer des moteurs de tailles différentes.</p>
+<div class="note ex">Un 1.2 de 96 kW : 96 ÷ 1,2 = 80 kW/L (environ 109 ch/L). Un vieux 2.0 atmosphérique de 85 kW : 42,5 kW/L. Le turbo et l'injection directe ont presque doublé la puissance spécifique en vingt ans.</div>
+<p>On parle aussi du <strong>rapport poids/puissance</strong> de la voiture (kg par ch) : une voiture de 1 200 kg avec 120 ch a 10 kg/ch. Plus il est bas, plus la voiture est vive.</p>
+<h3>La pression moyenne effective</h3>
+<p>Les ingénieurs utilisent une grandeur qui indique à quel point un moteur est « chargé », indépendamment de sa taille : la <strong>PME</strong> (pression moyenne effective). C'est la pression constante qui, appliquée sur les pistons pendant toute la course de détente, donnerait le même travail que le moteur réel. Un moteur essence atmosphérique tourne autour de 10 à 13 bars à pleine charge, un turbo essence ou diesel moderne dépasse 20 à 25 bars. Plus la PME est haute, plus le moteur est sollicité.</p>
+<h3>Une fiche technique réelle</h3>
+<p>Voici les réglages de distribution relevés sur deux moteurs courants (valeurs constructeur) :</p>
+<table class="tbl"><thead><tr><th>Réglage</th><th>Peugeot 1.4 essence (TU3, 75 ch)</th><th>Renault 1.5 dCi (K9K, diesel)</th></tr></thead><tbody>
+<tr><td>Admission, ouverture</td><td>1°36' avant PMH (AOA)</td><td>9° <strong>après</strong> PMH (retard à l'ouverture)</td></tr>
+<tr><td>Admission, fermeture</td><td>40°34' après PMB (RFA)</td><td>20° après PMB</td></tr>
+<tr><td>Échappement, ouverture</td><td>41°20' avant PMB (AOE)</td><td>27° avant PMB</td></tr>
+<tr><td>Échappement, fermeture</td><td>3°40' après PMH (RFE)</td><td>7° <strong>avant</strong> PMH (avance à la fermeture)</td></tr>
+</tbody></table>
+<div class="note why">Le diesel K9K n'a <strong>pas de croisement</strong> : l'échappement se ferme avant le PMH et l'admission s'ouvre après. Pourquoi ? Avec un taux de compression élevé, le piston passe très près des soupapes au PMH : impossible de les avoir ouvertes à ce moment-là. Et un diesel n'a pas besoin de balayage à haut régime puisqu'il tourne moins vite. Note aussi la notation en degrés et minutes d'angle : 40°34' se lit « 40 degrés 34 minutes », une minute valant 1/60e de degré.</div>`,
+    keys: ['Courbes : couple (maximum puis baisse), puissance (maximum plus haut), consommation spécifique (creux)', 'Plage d\'utilisation entre couple max et puissance max', 'Supercarré (course < alésage) tourne haut ; longue course (course > alésage) a du couple', 'Puissance spécifique en kW/L ; vitesse moyenne de piston = 2 × course × régime ÷ 60', 'Un diesel peut avoir une épure sans croisement'] }
+]);
+
+addQuiz('moteur', [
+  { q: 'Sur un diagramme pression-volume, le travail du cycle correspond à…', a: ['La hauteur maximale', 'L\'aire de la boucle', 'La largeur', 'La pente'], c: 1, e: 'Travail = force × distance, représenté par la surface.' },
+  { q: 'Selon la loi de Mariotte, si on divise le volume d\'un gaz par 4 à température constante, sa pression…', a: ['Est divisée par 4', 'Est multipliée par 4', 'Ne change pas', 'Double'], c: 1, e: 'p × V = constante.' },
+  { q: 'Un écart de compression de 30 % entre deux cylindres indique…', a: ['Un fonctionnement normal', 'Un défaut d\'étanchéité (segments, soupapes, joint)', 'Une batterie faible', 'Un turbo HS'], c: 1, e: 'Au-delà de 10 à 15 % d\'écart, on cherche un défaut.' },
+  { q: 'Des chemises humides…', a: ['Ne touchent pas le liquide de refroidissement', 'Forment la paroi du circuit d\'eau', 'N\'existent que sur les moteurs à air', 'Sont collées au bloc'], c: 1, e: 'Leur dépassement et leurs joints doivent être parfaits.' },
+  { q: 'Surfacer une culasse…', a: ['Diminue le taux de compression', 'Augmente le taux de compression', 'N\'a aucun effet', 'Augmente la cylindrée'], c: 1, e: 'Le volume de la chambre diminue.' },
+  { q: 'Pourquoi la jupe du piston est-elle ovale à froid ?', a: ['Pour l\'esthétique', 'Pour qu\'elle devienne ronde en se dilatant à chaud', 'Pour faire passer l\'huile', 'Pour alléger'], c: 1, e: 'Elle se dilate surtout dans le sens de l\'axe.' },
+  { q: '« Couler une bielle » signifie…', a: ['Casser la bielle en deux', 'Faire fondre le régule des coussinets par manque de lubrification', 'Remplir la bielle d\'huile', 'Changer la bielle'], c: 1, e: 'Le jeu devient énorme et la bielle cogne.' },
+  { q: 'Un déphaseur d\'arbre à cames est actionné par…', a: ['Un câble', 'La pression d\'huile moteur commandée par une électrovanne', 'Le liquide de refroidissement', 'Le turbo'], c: 1, e: 'D\'où l\'importance de la qualité de l\'huile.' },
+  { q: 'Avec la levée variable des soupapes, le boîtier papillon…', a: ['Dose l\'air seul', 'Reste presque grand ouvert', 'N\'existe plus du tout', 'Remplace l\'injecteur'], c: 1, e: 'Ce sont les soupapes qui dosent l\'air.' },
+  { q: 'Sur un 3 cylindres, l\'intervalle entre deux explosions est de…', a: ['120°', '180°', '240°', '360°'], c: 2, e: '720 ÷ 3 = 240°.' },
+  { q: 'Un moteur dont la course est plus grande que l\'alésage est dit…', a: ['Carré', 'Supercarré', 'Longue course', 'Rotatif'], c: 2, e: 'Il favorise le couple à bas régime.' },
+  { q: 'Un moteur de 1,6 L développe 120 kW. Sa puissance spécifique ?', a: ['75 kW/L', '120 kW/L', '192 kW/L', '60 kW/L'], c: 0, e: '120 ÷ 1,6 = 75 kW/L.' }
+]);
+addCards('moteur', [
+  ['Travail d\'un cycle sur le diagramme p-V', 'L\'aire de la boucle (travail de détente − travail de compression).'],
+  ['Loi de Mariotte', 'À température constante, pression × volume = constante.'],
+  ['Compression normale', 'Environ 12–16 bars en essence, 25–35 bars en diesel.'],
+  ['Ligne d\'arbre', 'Axe commun des paliers du vilebrequin.'],
+  ['Chemise humide / sèche', 'Humide : en contact avec le liquide. Sèche : sans contact.'],
+  ['Dépassement de chemise', 'Hauteur de la chemise au-dessus du plan de joint, à contrôler au comparateur.'],
+  ['Désaxage de l\'axe de piston', 'Évite le claquement de piston au PMH.'],
+  ['Régule', 'Métal antifriction tendre des coussinets.'],
+  ['Cote de réparation', 'Réalésage ou rectification avec pièces surdimensionnées.'],
+  ['EGR interne', 'Gaz brûlés conservés grâce au croisement des soupapes.'],
+  ['Levée variable', 'Course des soupapes réglée en continu ; remplace le papillon.'],
+  ['Ordre d\'allumage d\'un 3 cylindres', '1-2-3 ou 1-3-2, une explosion tous les 240°.'],
+  ['Moteur supercarré', 'Course inférieure à l\'alésage.'],
+  ['Puissance spécifique', 'Puissance ÷ cylindrée (kW/L).'],
+  ['PME', 'Pression moyenne effective : charge du moteur indépendamment de sa taille.'],
+  ['Vitesse moyenne du piston', '2 × course × régime ÷ 60 (m/s).']
+]);
+
+/* ===== ALIMENTATION : compléments ===== */
+insLessons('alimentation', 'combustion', [
+  { id: 'melange', title: 'Dosage, richesse et lambda', min: 11, deep: true,
+    goals: ['Distinguer dosage, richesse et lambda', 'Comprendre pourquoi les livres donnent 14,7 ou 15,3', 'Connaître les dosages de puissance et de rendement maximum', 'Comprendre la vaporisation et l\'homogénéité du mélange'],
+    body: `
+<h3>Trois façons de dire la même chose</h3>
+<dl class="defs">
+<dt>Le dosage</dt><dd>Le rapport entre la masse de carburant et la masse d'air. On l'écrit souvent comme une fraction : 1/14,7 veut dire 1 g de carburant pour 14,7 g d'air. On trouve aussi le rapport inverse air/carburant (AFR en anglais) : 14,7:1.</dd>
+<dt>La richesse (R)</dt><dd>Le dosage réel divisé par le dosage idéal (stœchiométrique). R = 1 : mélange parfait. R &gt; 1 : riche (trop de carburant). R &lt; 1 : pauvre.</dd>
+<dt>Le lambda (λ)</dt><dd>L'inverse de la richesse : la quantité d'air réelle divisée par la quantité d'air idéale. λ = 1 : parfait. λ &gt; 1 : pauvre (excès d'air). λ &lt; 1 : riche. C'est la notation utilisée par les sondes et les outils de diagnostic.</dd>
+</dl>
+<div class="note ex">Un moteur reçoit 1 g d'essence pour 13 g d'air. Dosage : 1/13. Richesse : 14,7 ÷ 13 ≈ 1,13 (13 % trop riche). Lambda : 13 ÷ 14,7 ≈ 0,88. Les trois chiffres décrivent le même mélange.</div>
+<h3>14,7 ou 15,3 ?</h3>
+<p>Tu trouveras parfois 15,3 dans les manuels de technologie. Ce chiffre vient du calcul chimique avec de l'<strong>heptane pur</strong> (C₇H₁₆), une molécule qu'on utilise souvent pour représenter l'essence dans les exercices : l'équation de combustion et les masses atomiques (carbone 12, hydrogène 1, oxygène 16) donnent environ 15,2 à 15,3 g d'air pour 1 g d'heptane. L'essence réelle est un mélange de centaines d'hydrocarbures, avec de l'éthanol en plus : son rapport réel est d'environ <strong>14,7</strong> (et un peu moins avec de l'E10 : l'éthanol contient déjà de l'oxygène). C'est cette valeur que les calculateurs utilisent.</p>
+<h3>Ce qu'on observe au banc d'essai</h3>
+<p>Si l'on fait varier le dosage à régime et ouverture de papillon constants :</p>
+<ul>
+<li>en dessous d'environ <strong>1/28</strong> (beaucoup trop pauvre) ou au-dessus d'environ <strong>1/8</strong> (beaucoup trop riche), le mélange ne brûle plus du tout ;</li>
+<li>la <strong>puissance maximale</strong> est obtenue avec un mélange légèrement <strong>riche</strong>, autour de 1/12,5 (R ≈ 1,15 à 1,2) : tout l'oxygène disponible est consommé ;</li>
+<li>le <strong>rendement maximal</strong> (la meilleure économie) est obtenu avec un mélange légèrement <strong>pauvre</strong>, entre 1/15 et 1/18 selon le remplissage : tout le carburant trouve de l'oxygène pour brûler ;</li>
+<li>le mélange stœchiométrique (λ = 1) est entre les deux. On l'utilise presque tout le temps, non pas parce qu'il est le meilleur pour le moteur, mais parce que c'est <strong>le seul où le catalyseur 3 voies</strong> peut traiter en même temps CO, HC et NOx.</li>
+</ul>
+<div class="note why">C'est pour ça qu'à pleine charge, le calculateur passe légèrement en riche (boucle ouverte) : un peu plus de puissance, et le carburant en excès refroidit la chambre, les soupapes d'échappement, le turbo et le catalyseur. Et qu'un diesel, lui, fonctionne toujours en <strong>excès d'air</strong> (λ de 1,2 au minimum à pleine charge, jusqu'à 3 ou plus au ralenti) : il dose sa puissance uniquement par la quantité de gazole.</div>
+<h3>Vaporisation et homogénéité</h3>
+<p>Un carburant liquide ne brûle pas : il faut qu'il s'évapore pour se mélanger aux molécules d'oxygène. La <strong>vaporisation</strong> est favorisée par :</p>
+<ul>
+<li>une grande surface de contact avec l'air : c'est le rôle de la pulvérisation en fines gouttelettes (d'où les hautes pressions d'injection) ;</li>
+<li>la chaleur : moteur chaud, air chaud ;</li>
+<li>une faible pression (dépression dans l'admission).</li>
+</ul>
+<p>L'<strong>homogénéité</strong>, c'est que chaque molécule de carburant soit bien entourée d'air. Elle se crée par le brassage dans les conduits et dans la chambre (tourbillons appelés <em>swirl</em> autour de l'axe du cylindre et <em>tumble</em> en rouleau vertical), et pendant la compression.</p>
+<div class="note ex">À froid, une partie de l'essence se condense en film liquide sur les parois froides du conduit et du cylindre et ne participe pas à la combustion. Le calculateur doit donc injecter plus pour obtenir le bon mélange : c'est l'enrichissement à froid, et la raison pour laquelle une voiture consomme beaucoup plus sur les premiers kilomètres.</div>`,
+    keys: ['Dosage = carburant/air ; richesse R = dosage réel ÷ idéal ; λ = 1/R', '14,7 pour l\'essence réelle ; 15,3 pour l\'heptane pur des exercices', 'Puissance max vers R ≈ 1,15–1,2 ; rendement max légèrement pauvre', 'λ = 1 imposé par le catalyseur 3 voies ; diesel toujours en excès d\'air', 'Vaporisation (pulvérisation, chaleur) et homogénéité (swirl, tumble)'] },
+
+  { id: 'biocarburants', title: 'Biocarburants, GPL, GNV et hydrogène', min: 12, deep: true,
+    goals: ['Connaître les biocarburants essence et gazole et leurs étiquettes à la pompe', 'Comprendre le fonctionnement d\'une installation GPL', 'Connaître le GNV et le bioGNV', 'Situer l\'hydrogène'],
+    body: `
+<h3>Les biocarburants pour moteurs essence</h3>
+<ul>
+<li>L'<strong>éthanol</strong> (un alcool) est produit par fermentation de plantes sucrières (betterave, canne à sucre) ou riches en amidon (blé, maïs) : c'est la <strong>première génération</strong>. La <strong>deuxième génération</strong> le produit à partir de déchets végétaux et de bois (cellulose), sans concurrencer l'alimentation.</li>
+<li>L'<strong>ETBE</strong> est un dérivé fabriqué à partir d'éthanol et d'un produit pétrolier. Il se mélange très bien à l'essence et améliore son indice d'octane.</li>
+</ul>
+<table class="tbl"><thead><tr><th>Étiquette à la pompe</th><th>Carburant</th><th>Compatibilité</th></tr></thead><tbody>
+<tr><td>E5</td><td>SP95 ou SP98, jusqu'à 5 % d'éthanol</td><td>Toutes les voitures essence</td></tr>
+<tr><td>E10</td><td>SP95-E10, jusqu'à 10 % d'éthanol</td><td>Presque toutes les voitures essence depuis les années 2000 (vérifier la trappe ou le manuel pour les plus anciennes)</td></tr>
+<tr><td>E85</td><td>Superéthanol, environ 60 à 85 % d'éthanol selon la saison</td><td>Voitures « flex-fuel », ou voitures équipées d'un boîtier de conversion homologué</td></tr>
+</tbody></table>
+<div class="note why">Pourquoi l'E85 demande une adaptation ? L'éthanol contient moins d'énergie par litre que l'essence (environ un tiers de moins) : il faut injecter environ 30 % de carburant en plus. Il démarre mal à froid, et il est plus agressif pour certains joints et plastiques. En échange, son indice d'octane très élevé (environ 105) permet plus d'avance, et son prix est bas. La surconsommation est d'environ 20 à 30 %.</div>
+<h3>Les biocarburants pour moteurs diesel</h3>
+<ul>
+<li>Les <strong>EMHV</strong> (esters méthyliques d'huiles végétales, aussi appelés biodiesel ou Diester) : fabriqués à partir de colza, de tournesol, d'huiles usagées ou de graisses animales, par une transformation chimique (la transestérification). On les mélange au gazole.</li>
+<li>Le <strong>HVO</strong> (huile végétale hydrotraitée) : fabriqué à partir des mêmes matières premières mais par un procédé différent, il donne un carburant chimiquement très proche du gazole, utilisable pur dans de nombreux moteurs récents (étiquette XTL).</li>
+</ul>
+<table class="tbl"><thead><tr><th>Étiquette</th><th>Carburant</th></tr></thead><tbody>
+<tr><td>B7</td><td>Gazole standard, jusqu'à 7 % de biodiesel</td></tr>
+<tr><td>B10</td><td>Jusqu'à 10 %, compatible avec beaucoup de diesels récents</td></tr>
+<tr><td>B30, B100</td><td>Réservés aux véhicules compatibles (souvent des flottes, camions, bus)</td></tr>
+<tr><td>XTL</td><td>Gazole paraffinique de synthèse, dont le HVO100</td></tr>
+</tbody></table>
+<h3>Le GPL</h3>
+<p>Le <strong>GPL</strong> (gaz de pétrole liquéfié) est un mélange de butane et de propane, issu du raffinage du pétrole ou de l'extraction de gaz naturel. Gazeux à pression ambiante, il devient liquide sous une faible pression : il est stocké liquide dans un réservoir sous environ 7 à 12 bars.</p>
+<p>Les voitures GPL sont en <strong>bicarburation</strong> : elles gardent leur réservoir d'essence et démarrent souvent à l'essence, puis basculent automatiquement au GPL une fois chaudes (et reviennent à l'essence si le GPL est épuisé).</p>
+<ol class="steps">
+<li>Le <strong>réservoir</strong> (souvent dans le logement de la roue de secours) est équipé d'une <strong>polyvanne</strong> qui limite le remplissage à 80–85 % (il faut laisser de la place à la dilatation du gaz), d'une jauge et d'une <strong>soupape de sécurité</strong> tarée vers 25 bars.</li>
+<li>Une <strong>électrovanne</strong> coupe l'arrivée de GPL moteur arrêté.</li>
+<li>Le <strong>vaporisateur-détendeur</strong> fait chuter la pression du GPL liquide : il se vaporise. Cette vaporisation absorbe beaucoup de chaleur (comme dans une clim), c'est pourquoi le vaporisateur est réchauffé par le liquide de refroidissement du moteur.</li>
+<li>Le gaz, à environ 1 à 2 bars, arrive à une rampe d'<strong>injecteurs GPL</strong> (un par cylindre) pilotés par un calculateur GPL qui suit les commandes du calculateur essence.</li>
+</ol>
+<p>Avantages : carburant bien moins cher, moins de CO, de HC et de particules, combustion propre. Inconvénients : surconsommation d'environ 15 à 20 % en volume (le GPL contient moins d'énergie par litre), légère perte de puissance, réseau de stations plus restreint.</p>
+<h3>Le GNV et le bioGNV</h3>
+<p>Le <strong>GNV</strong> (gaz naturel pour véhicules) est du méthane, stocké sous forme comprimée à environ 200 bars dans des bouteilles très résistantes. Le <strong>bioGNV</strong> est le même gaz, mais produit par méthanisation de déchets organiques : il est renouvelable. Peu répandu en voiture particulière en France, il est courant pour les bus et camions. Le <strong>GNL</strong> est du gaz naturel liquéfié à environ −160 °C, utilisé pour les poids lourds.</p>
+<h3>L'hydrogène</h3>
+<p>L'hydrogène peut être utilisé de deux façons : brûlé dans un moteur thermique adapté, ou, beaucoup plus souvent, transformé en électricité dans une <strong>pile à combustible</strong> qui alimente un moteur électrique (voir le module sur les électriques). Il ne rejette que de l'eau à l'utilisation, mais sa production consomme beaucoup d'énergie, et il est stocké sous 350 à 700 bars.</p>`,
+    keys: ['E5, E10 (essence) ; E85 = flex-fuel, surconsommation 20–30 %', 'B7, B10, B30/B100, XTL (HVO) pour le diesel', 'GPL : butane-propane liquide sous 7–12 bars, remplissage limité à 80–85 %, vaporisateur réchauffé, bicarburation', 'GNV : méthane comprimé à 200 bars ; bioGNV renouvelable', 'Hydrogène : surtout via pile à combustible, stocké à 350–700 bars'] }
+]);
+
+insLessons('alimentation', 'injection-essence', [
+  { id: 'injection-composants', title: 'L\'injection essence pièce par pièce', min: 13, deep: true,
+    goals: ['Connaître le circuit de carburant sans retour', 'Connaître chaque capteur et le signal qu\'il fournit', 'Comprendre le canister', 'Connaître les modes homogène et stratifié de l\'injection directe'],
+    body: `
+<h3>Le circuit de carburant</h3>
+<p>Sur les voitures actuelles, le circuit est dit <strong>sans retour</strong> : tout le carburant envoyé vers le moteur est injecté, il n'y a plus de tuyau de retour vers le réservoir. Le réservoir contient un <strong>module pompe-jauge-filtre</strong> avec le régulateur de pression intégré. Une seule canalisation monte jusqu'à la rampe des injecteurs.</p>
+<p>Sur les systèmes plus anciens (avec retour), le régulateur était sur la rampe et maintenait une différence de pression constante (environ 3 bars) entre l'essence et le collecteur d'admission, l'excédent repartant au réservoir.</p>
+<h3>Les capteurs et leurs signaux</h3>
+<table class="tbl"><thead><tr><th>Capteur</th><th>Principe et signal</th><th>Rôle</th></tr></thead><tbody>
+<tr><td>Capteur de régime et de position (PMH)</td><td>Inductif (un aimant et une bobine devant une cible dentée à dent manquante) : il produit une tension alternative dont la fréquence et l'amplitude augmentent avec la vitesse. Certains sont à effet Hall (signal carré)</td><td>Régime, position du vilebrequin, détection des ratés</td></tr>
+<tr><td>Capteur d'arbre à cames (référence cylindre)</td><td>Effet Hall, signal carré</td><td>Savoir quel cylindre est en compression : injection et allumage séquentiels</td></tr>
+<tr><td>Capteur de pression collecteur (MAP)</td><td>Piézorésistif : une membrane dont la résistance varie avec la pression, signal de 0 à 5 V</td><td>Avec le régime et la température, permet de calculer la masse d'air admise (système « pression-régime »)</td></tr>
+<tr><td>Débitmètre à film chaud</td><td>Un élément chauffé est refroidi par l'air qui passe : le courant nécessaire pour le garder chaud donne la masse d'air</td><td>Mesure directe de la masse d'air (système « débit-régime »)</td></tr>
+<tr><td>Sondes de température (eau, air)</td><td>Thermistances CTN : leur résistance diminue quand la température monte</td><td>Enrichissement à froid, corrections</td></tr>
+<tr><td>Capteur de position papillon / pédale</td><td>Potentiomètres (souvent doublés pour la sécurité) ou capteurs sans contact</td><td>Demande du conducteur, accélérations</td></tr>
+<tr><td>Capteur de cliquetis</td><td>Piézoélectrique : un cristal qui produit une tension quand il vibre</td><td>Retrait d'avance cylindre par cylindre</td></tr>
+<tr><td>Sonde lambda</td><td>Classique (binaire) : 0,1 V en pauvre, 0,9 V en riche, basculement brutal autour de λ = 1. Proportionnelle (large bande) : mesure le lambda précis</td><td>Régulation de richesse, surveillance du catalyseur</td></tr>
+<tr><td>Vitesse véhicule</td><td>Souvent fournie par l'ABS via le réseau</td><td>Ralenti, coupure en décélération, régulateur</td></tr>
+</tbody></table>
+<div class="note ex">Les sondes de température sont faciles à tester au multimètre : une sonde d'eau typique fait plusieurs milliers d'ohms à 20 °C et quelques centaines d'ohms à 90 °C. Une sonde coupée fait croire au calculateur qu'il fait −40 °C : il enrichit énormément, la voiture fume noir et consomme. Une sonde en court-circuit lui fait croire que le moteur est brûlant : démarrage à froid très difficile.</div>
+<h3>Les actionneurs</h3>
+<ul>
+<li>Les <strong>injecteurs</strong> : une bobine soulève une aiguille quand elle est alimentée. Leur résistance (souvent 12 à 16 Ω pour les injecteurs indirects classiques) se contrôle au multimètre.</li>
+<li>Le <strong>boîtier papillon motorisé</strong> : un petit moteur électrique ouvre le papillon selon la demande du calculateur. Il gère aussi le ralenti (autrefois assuré par un moteur pas à pas qui ouvrait un passage d'air en dérivation du papillon).</li>
+<li>Les <strong>bobines d'allumage</strong>, la <strong>purge canister</strong>, la <strong>vanne EGR</strong>, le <strong>déphaseur</strong>, le <strong>relais de pompe</strong>.</li>
+</ul>
+<h3>Le canister</h3>
+<p>L'essence s'évapore dans le réservoir, surtout quand il fait chaud. Ces vapeurs sont des HC polluants. Le réservoir n'est donc plus mis à l'air libre : ses vapeurs vont dans le <strong>canister</strong>, une boîte remplie de <strong>charbon actif</strong> qui les absorbe comme une éponge. Quand le moteur tourne, le calculateur ouvre l'<strong>électrovanne de purge</strong> : la dépression du collecteur aspire de l'air frais à travers le charbon, qui relâche les vapeurs, et elles sont brûlées dans le moteur. Le calculateur corrige l'injection en conséquence.</p>
+<div class="note ex">Le code P0455 (grosse fuite du système d'évaporation) vient souvent d'un simple bouchon de réservoir mal fermé ou à joint abîmé. L'odeur d'essence autour de la voiture garée en plein soleil peut aussi venir d'un canister saturé ou fissuré.</div>
+<h3>Les particularités de l'injection directe essence</h3>
+<p>Une pompe électrique basse pression (environ 4 à 6 bars) alimente une <strong>pompe haute pression</strong> mécanique, entraînée par une came spéciale de l'arbre à cames (souvent à 3 ou 4 lobes). Elle remplit une <strong>rampe</strong> en aluminium qui stocke le carburant sous pression et amortit les pulsations. Un <strong>capteur haute pression</strong> et un <strong>régulateur</strong> (souvent intégré à la pompe) ajustent la pression : quelques dizaines de bars au ralenti, jusqu'à 200 à 350 bars sur les moteurs récents. Une <strong>valve Schrader</strong> (comme une valve de pneu) sur le circuit permet de mesurer la pression ou de la faire chuter avant intervention.</p>
+<div class="note warn">Les canalisations haute pression entre pompe et rampe sont souvent à remplacer à chaque démontage (leurs raccords sont déformés au serrage pour étancher).</div>
+<p>Deux modes de fonctionnement existent :</p>
+<ul>
+<li><strong>Mode homogène</strong> : injection pendant l'admission, mélange réparti dans tout le cylindre à λ = 1. C'est le mode utilisé presque tout le temps aujourd'hui, car il permet le catalyseur 3 voies.</li>
+<li><strong>Mode stratifié</strong> : injection tardive pendant la compression, le mélange est concentré autour de la bougie par la forme du piston et des tourbillons, alors que le reste du cylindre ne contient que de l'air. Le mélange global est très pauvre (λ jusqu'à 2 à 3), papillon grand ouvert : grosse économie à faible charge. Mais il produit beaucoup de NOx, impossibles à traiter avec un catalyseur classique (il faut un piège à NOx), d'où son abandon progressif en Europe.</li>
+</ul>`,
+    keys: ['Circuit sans retour : module pompe-jauge-filtre-régulateur dans le réservoir', 'Capteur PMH inductif (alternatif) ou Hall (carré) ; MAP piézorésistif ; CTN pour les températures ; cliquetis piézo', 'Sonde lambda binaire : 0,1 V pauvre, 0,9 V riche', 'Canister à charbon actif + électrovanne de purge', 'Injection directe : pompe HP sur l\'arbre à cames, modes homogène (λ = 1) et stratifié (très pauvre, NOx)'] }
+]);
+
+insLessons('alimentation', 'diesel', [
+  { id: 'diesel-composants', title: 'Common rail, préchauffage et additif FAP', min: 12, deep: true,
+    goals: ['Suivre le gazole du réservoir à l\'injecteur', 'Comprendre la régulation de pression dans la rampe', 'Comprendre le fonctionnement d\'un injecteur mécanique et piézo', 'Connaître le pré-postchauffage et l\'additivation du FAP'],
+    body: `
+<h3>Le trajet du gazole</h3>
+<ol class="steps">
+<li><strong>Pompe de gavage</strong> électrique dans le réservoir (environ 2 à 5 bars), ou pompe de transfert intégrée à la pompe haute pression qui aspire elle-même.</li>
+<li><strong>Filtre à gazole</strong>, souvent avec un <strong>réchauffeur</strong> (le gazole fige par grand froid : la paraffine forme des cristaux qui bouchent le filtre), un <strong>décanteur</strong> d'eau au fond, et parfois un <strong>détecteur d'eau</strong> qui allume un voyant. On purge l'eau régulièrement.</li>
+<li><strong>Pompe haute pression</strong>, entraînée par la distribution. Les plus courantes ont <strong>3 pistons radiaux</strong> disposés à 120° autour d'un excentrique : chaque piston aspire puis refoule à son tour. Son calage n'a pas d'importance sur l'instant d'injection, contrairement aux anciennes pompes rotatives.</li>
+<li><strong>Rampe commune</strong>, avec un capteur de pression.</li>
+<li><strong>Injecteurs</strong>, un par cylindre.</li>
+<li><strong>Retours</strong> : le gazole de commande des injecteurs et l'excédent de la pompe retournent au réservoir, parfois à travers un petit <strong>refroidisseur</strong> (le gazole comprimé à 2 000 bars chauffe beaucoup).</li>
+</ol>
+<h3>La régulation de pression</h3>
+<p>Le calculateur choisit une pression de consigne selon le régime et la charge (environ 250 à 300 bars au ralenti, jusqu'à 1 600 à 2 500 bars en pleine charge) et la compare à la mesure du capteur de rampe. Il agit sur :</p>
+<ul>
+<li>un <strong>régulateur de débit</strong> (électrovanne de contrôle volumétrique) à l'entrée de la pompe : il dose la quantité de gazole que la pompe peut aspirer, donc comprimer. C'est le plus économique, car la pompe ne comprime que ce qui est utile ;</li>
+<li>et souvent un <strong>régulateur de pression</strong> sur la rampe ou la pompe, qui laisse fuir l'excédent vers le retour, utile pour faire baisser la pression très vite (lever de pied).</li>
+</ul>
+<div class="note ex">Codes typiques : P0087 (pression trop basse : filtre colmaté, prise d'air, pompe de gavage faible, régulateur, pompe HP usée, injecteur qui fuit trop) et P0088 (pression trop haute : régulateur bloqué). On compare la consigne et la mesure en données en direct, notamment pendant le démarrage : il faut souvent au moins 150 à 250 bars pour que le calculateur autorise l'injection.</div>
+<h3>L'injecteur</h3>
+<p><strong>L'injecteur mécanique</strong> (anciens diesels) est une simple soupape : une aiguille est plaquée sur son siège par un ressort <strong>taré</strong>. Quand la pression du gazole envoyé par la pompe dépasse la force du ressort (le tarage, par exemple 130 à 150 bars en injection indirecte), l'aiguille se soulève et le gazole jaillit. On distingue les injecteurs <strong>à téton</strong> (un seul jet, pour les préchambres) et les injecteurs <strong>à trous</strong> (plusieurs jets fins, pour l'injection directe).</p>
+<p><strong>L'injecteur common rail</strong> utilise un principe astucieux : l'aiguille est soumise à la pression de la rampe par en dessous, mais aussi par au-dessus, dans une petite chambre de commande. Tant que les deux pressions sont égales, un ressort la tient fermée. Pour injecter, l'électroaimant (ou le cristal piézo) ouvre une minuscule valve qui vide la chambre de commande vers le retour : la pression au-dessus chute, la pression du dessous soulève l'aiguille. Quand la valve se referme, la chambre se remplit à nouveau et l'aiguille se ferme. C'est ce qui explique le retour d'injecteur : il est indispensable au fonctionnement. Un injecteur piézo est plus rapide, ce qui permet plus d'injections par cycle et des quantités plus fines.</p>
+<div class="note warn">Les injecteurs common rail sont <strong>codés</strong> : chacun a un code de correction (gravé sur son corps) qui compense ses petites différences de fabrication. Après remplacement, il faut entrer ce code dans le calculateur avec un outil de diagnostic, sinon le moteur tourne mal et fume.</div>
+<h3>Le pré-postchauffage</h3>
+<p>Le calculateur pilote un <strong>boîtier de préchauffage</strong> (un relais de puissance) qui alimente les bougies selon la température du liquide de refroidissement :</p>
+<ul>
+<li><strong>Préchauffage</strong> : au contact, si le moteur est froid (souvent sous 20 °C environ). Le voyant s'allume pendant une durée qui dépend de la température, puis les bougies restent alimentées quelques secondes si on ne démarre pas.</li>
+<li><strong>Chauffage pendant le démarrage</strong>.</li>
+<li><strong>Postchauffage</strong> : les bougies restent alimentées jusqu'à quelques minutes après le démarrage. Ça stabilise la combustion à froid, réduit le bruit, la pollution et surtout les <strong>fumées bleues</strong> à froid et en altitude.</li>
+</ul>
+<p>Les bougies modernes chauffent à plus de 1 000 °C en 2 à 5 secondes. Une bougie défectueuse se repère à sa résistance (souvent moins de 1 à 2 Ω quand elle est bonne, infinie si elle est coupée) ou par le courant qu'elle consomme.</p>
+<h3>L'additivation du FAP</h3>
+<p>La suie d'un FAP brûle naturellement vers 550 à 600 °C, une température difficile à atteindre en usage normal. Certains constructeurs (notamment PSA, avec les FAP « additivés ») ajoutent au gazole un <strong>additif</strong> (à base de cérine ou de fer) qui abaisse cette température vers 450 °C : les régénérations sont plus faciles et plus fréquentes.</p>
+<ul>
+<li>L'additif est stocké dans un petit réservoir séparé, souvent près du réservoir de gazole.</li>
+<li>Un calculateur d'additif détecte chaque plein et injecte une dose proportionnelle au gazole ajouté.</li>
+<li>Inconvénient : l'additif laisse des résidus (cendres) qui s'accumulent dans le FAP et finissent par le colmater définitivement, d'où un remplacement du FAP et un remplissage de l'additif à intervalles réguliers (souvent entre 120 000 et 180 000 km selon les générations).</li>
+</ul>
+<p>Les autres constructeurs utilisent plutôt des FAP <strong>catalysés</strong> (recouverts de métaux précieux) qui n'ont pas besoin d'additif.</p>`,
+    keys: ['Gavage → filtre (réchauffeur, décanteur d\'eau) → pompe HP radiale → rampe → injecteurs → retours', 'Régulateur de débit (entrée pompe) + régulateur de pression (fuite)', 'Injecteur CR : la valve vide la chambre de commande, l\'aiguille se soulève ; injecteurs codés', 'Préchauffage, chauffage au démarrage, postchauffage (fumées bleues)', 'Additif FAP (cérine) : régénération vers 450 °C, mais colmatage à terme'] }
+]);
+
+insLessons('alimentation', 'turbo', [
+  { id: 'suralimentation', title: 'Suralimentation : régulation et compresseurs', min: 11, deep: true,
+    goals: ['Distinguer pression relative et pression absolue', 'Comprendre la régulation pneumatique et électronique du turbo', 'Comparer turbo et compresseur volumétrique', 'Connaître les avantages et contraintes de la suralimentation'],
+    body: `
+<h3>Pression relative et pression absolue</h3>
+<p>Deux façons de mesurer une pression :</p>
+<ul>
+<li>la <strong>pression absolue</strong> part du vide total (0 bar absolu). La pression atmosphérique vaut environ 1 bar absolu au niveau de la mer ;</li>
+<li>la <strong>pression relative</strong> (ou manométrique) part de la pression atmosphérique. C'est ce qu'indique un manomètre de pneu.</li>
+</ul>
+<p class="formula">Pression absolue = pression relative + pression atmosphérique (≈ 1 bar)</p>
+<div class="note ex">Un turbo qui « souffle à 1,4 bar » (pression relative) crée une pression absolue de 1,4 + 1 = 2,4 bars dans le collecteur. L'air y est donc 2,4 fois plus dense qu'au repos (à température égale). Le capteur MAP du calculateur mesure la pression absolue : au ralenti d'un moteur essence, il indique environ 0,3 bar (la dépression derrière le papillon presque fermé), à pleine charge sur un turbo, 2 à 2,5 bars.</div>
+<p>La pression de suralimentation d'une voiture de série se situe souvent entre 0,3 et 1,5 bar relatif. Elle dépend de la conception du moteur, notamment de son taux de compression, qu'on <strong>abaisse</strong> sur les moteurs turbo (car la compression totale = compression du turbo + compression du piston, et l'essence cliquèterait).</p>
+<h3>La régulation de pression</h3>
+<p>Sans régulation, la pression monterait sans limite avec le régime. Deux principes :</p>
+<dl class="defs">
+<dt>Régulation pneumatique (ancienne)</dt><dd>La wastegate est reliée à une <strong>capsule</strong> avec une membrane et un ressort, branchée sur la pression du collecteur d'admission. Quand la pression dépasse la force du ressort, la membrane ouvre la wastegate et les gaz contournent la turbine. Simple, mais la pression maximale est fixe.</dd>
+<dt>Régulation électronique (actuelle)</dt><dd>Le calculateur compare la pression mesurée par le capteur de suralimentation à une consigne (qui dépend du régime, de la charge, de la température, du rapport engagé, de l'altitude). Il commande une <strong>électrovanne de régulation</strong> (en rapport cyclique) qui envoie plus ou moins de dépression (venant de la pompe à vide) sur la capsule, ou pilote directement un <strong>actionneur électrique</strong> de wastegate ou d'ailettes de géométrie variable.</dd>
+</dl>
+<div class="note ex">Sur beaucoup de systèmes à dépression, la wastegate (ou les ailettes) est en position « sans pression » au repos, et c'est le calculateur qui doit agir pour faire monter le turbo. Conséquence en diagnostic : une simple durite de dépression fendue ou débranchée donne une perte de puissance et un code de sous-suralimentation (P0299), sans que le turbo soit en cause. On vérifie toujours les durites et l'électrovanne avant de condamner un turbo.</div>
+<h3>Turbo à géométrie variable</h3>
+<p>Un turbo classique a un temps de réponse : à bas régime, il y a peu de gaz, la turbine tourne lentement et le moteur se comporte comme un atmosphérique. Le <strong>turbo à géométrie variable</strong> (VGT) entoure la turbine d'<strong>ailettes orientables</strong> montées sur un disque, actionnées par une biellette :</p>
+<ul>
+<li>à bas régime, les ailettes se ferment : le passage est étroit, les gaz accélèrent et frappent la turbine plus efficacement. Le turbo répond tôt ;</li>
+<li>à haut régime, elles s'ouvrent : passage large, la pression est limitée (plus besoin de wastegate).</li>
+</ul>
+<p>Leur point faible : la suie qui grippe les ailettes, surtout avec un usage urbain. Symptôme : perte de puissance par intermittence et mode dégradé.</p>
+<h3>Compresseur volumétrique ou turbo ?</h3>
+<table class="tbl"><thead><tr><th></th><th>Compresseur volumétrique</th><th>Turbocompresseur</th></tr></thead><tbody>
+<tr><td>Entraînement</td><td>Mécanique, par courroie depuis le vilebrequin (souvent surmultiplié)</td><td>Par les gaz d'échappement</td></tr>
+<tr><td>Principe</td><td>Deux rotors à lobes (type Roots) ou une vis emprisonnent l'air et le transportent : débit proportionnel au régime</td><td>Roue de compresseur centrifuge tournant jusqu'à 200 000 tr/min</td></tr>
+<tr><td>Réponse</td><td>Immédiate, dès le ralenti</td><td>Temps de réponse</td></tr>
+<tr><td>Rendement</td><td>Prend de la puissance au moteur pour tourner</td><td>Récupère une énergie qui serait perdue</td></tr>
+<tr><td>Usage</td><td>Quelques moteurs (anciennes Mercedes Kompressor, certaines sportives) ; parfois débrayable par embrayage électromagnétique</td><td>La quasi-totalité des moteurs suralimentés</td></tr>
+</tbody></table>
+<p>Il existe aussi des combinaisons : deux turbos de tailles différentes en série (un petit pour les bas régimes, un grand pour la puissance), turbo + compresseur, ou <strong>turbos électriques</strong> (un moteur électrique aide la turbine à démarrer instantanément, sur des systèmes 48 V).</p>
+<h3>Bilan de la suralimentation</h3>
+<ul>
+<li><strong>Avantages</strong> : plus de puissance pour une même cylindrée (meilleur rapport masse/puissance), possibilité de réduire la cylindrée (downsizing), meilleur rendement global, moteur peu sensible à l'altitude (le turbo compense l'air raréfié).</li>
+<li><strong>Contraintes</strong> : taux de compression réduit, pièces plus sollicitées (pistons, joint de culasse, coussinets), températures élevées (huile de qualité indispensable), échangeur nécessaire, temps de réponse, complexité.</li>
+</ul>
+<p>Les échangeurs sont de deux types : <strong>air/air</strong> (refroidis par l'air qui traverse la calandre, le plus courant) ou <strong>air/eau</strong> (refroidis par un circuit de liquide, plus compacts et placés près du moteur, mais ils ne descendent pas sous la température du liquide qui les refroidit, sauf circuit dédié à basse température).</p>`,
+    keys: ['Pression absolue = relative + ≈ 1 bar (1,4 bar relatif = 2,4 bars absolus)', 'Régulation pneumatique (capsule) ou électronique (consigne, électrovanne RCO, actionneur)', 'Une durite de dépression fendue peut donner P0299 sans que le turbo soit en cause', 'Géométrie variable : ailettes fermées à bas régime, ouvertes à haut régime', 'Compresseur volumétrique : réponse immédiate mais prend de la puissance'] }
+]);
+
+insLessons('alimentation', 'echappement', [
+  { id: 'antipollution', title: 'Dépollution : systèmes et normes Euro', min: 14, deep: true,
+    goals: ['Connaître tous les polluants et leurs effets', 'Comprendre le catalyseur 3 voies, le piège à NOx et l\'air secondaire', 'Comprendre la surveillance EOBD', 'Connaître les normes Euro, WLTP et RDE'],
+    body: `
+<h3>Les polluants et leurs effets</h3>
+<table class="tbl"><thead><tr><th>Polluant</th><th>Origine</th><th>Effets</th></tr></thead><tbody>
+<tr><td>CO (monoxyde de carbone)</td><td>Combustion incomplète, mélange riche ; surtout essence, à froid et dans les bouchons</td><td>Gaz inodore et mortel : il prend la place de l'oxygène dans le sang</td></tr>
+<tr><td>HC (hydrocarbures imbrûlés)</td><td>Carburant ou huile non brûlés, ratés, vapeurs d'essence</td><td>Irritants, certains cancérigènes (benzène, HAP), forment de l'ozone en été</td></tr>
+<tr><td>NOx (oxydes d'azote)</td><td>L'azote de l'air brûle quand la combustion est très chaude ; surtout diesel et mélanges pauvres</td><td>Irritants pour les poumons, asthme, pluies acides, ozone</td></tr>
+<tr><td>Particules (PM)</td><td>Suie de combustion ; surtout diesel et injection directe essence</td><td>Pénètrent dans les poumons et le sang : maladies respiratoires et cardiovasculaires, cancers</td></tr>
+<tr><td>SO₂ (dioxyde de soufre)</td><td>Soufre du carburant (très réduit aujourd'hui)</td><td>Irritant, pluies acides</td></tr>
+<tr><td>CO₂ (dioxyde de carbone)</td><td>Produit normal de toute combustion de carbone</td><td>Non toxique, mais principal gaz à effet de serre. Proportionnel à la consommation</td></tr>
+</tbody></table>
+<p>Deux familles de solutions : <strong>ne pas produire</strong> le polluant (agir sur la combustion : richesse précise, injection, EGR, distribution variable), ou le <strong>traiter après coup</strong> dans l'échappement (post-traitement).</p>
+<h3>Le catalyseur 3 voies</h3>
+<p>Il traite en même temps trois polluants, d'où son nom :</p>
+<ul>
+<li>il <strong>oxyde</strong> le CO en CO₂ et les HC en CO₂ + H₂O (grâce au platine et au palladium) ;</li>
+<li>il <strong>réduit</strong> les NOx en azote N₂ (grâce au rhodium), en leur retirant leur oxygène.</li>
+</ul>
+<p>Les deux réactions sont opposées : l'oxydation demande un peu d'oxygène, la réduction demande de ne pas en avoir trop. C'est pourquoi le mélange doit osciller très précisément autour de λ = 1. Le catalyseur contient aussi de l'oxyde de cérium qui stocke et relâche un peu d'oxygène pour lisser ces oscillations.</p>
+<ul>
+<li>Il commence à fonctionner vers 250 à 300 °C (« amorçage »), son efficacité idéale se situe entre 400 et 800 °C.</li>
+<li>Au-delà d'environ 1 000 °C, la céramique fond : c'est ce qui arrive avec des ratés d'allumage (le carburant non brûlé brûle dans le catalyseur).</li>
+<li>Un catalyseur en céramique est fragile : un choc sur un trottoir peut casser le monolithe, qui fait alors un bruit de cailloux dans l'échappement.</li>
+</ul>
+<p>Sur les diesels, qui fonctionnent toujours avec un excès d'air, on utilise un <strong>catalyseur d'oxydation</strong> (2 voies : CO et HC), et les NOx sont traités séparément (EGR, SCR, piège à NOx).</p>
+<h3>L'injection d'air secondaire</h3>
+<p>Le catalyseur ne fonctionne pas à froid, or c'est dans les premières minutes que le moteur pollue le plus. Certains moteurs ont une <strong>pompe à air électrique</strong> qui souffle de l'air frais dans le collecteur d'échappement juste après le démarrage, pendant que le calculateur enrichit le mélange. Le carburant en excès brûle dans l'échappement et le catalyseur, qui chauffe beaucoup plus vite. D'autres moteurs retardent fortement l'allumage à froid pour obtenir le même effet.</p>
+<h3>Le piège à NOx</h3>
+<p>Pour les moteurs à mélange pauvre (diesels, essence en mode stratifié), il existe un catalyseur particulier contenant de l'<strong>oxyde de baryum</strong>. Pendant le fonctionnement pauvre, il <strong>stocke</strong> les NOx sous forme de nitrates. Quand il est plein (après quelques minutes), le calculateur passe brièvement le moteur en mélange riche (quelques secondes) : le CO et les HC en excès <strong>déstockent</strong> les nitrates et les transforment en azote. C'est une régénération, comme pour le FAP.</p>
+<h3>Les autres systèmes</h3>
+<ul>
+<li><strong>Recyclage des gaz de carter</strong> (reniflard) : les gaz qui passent entre les segments vers le carter sont aspirés vers l'admission et brûlés, au lieu d'être rejetés. Un décanteur sépare l'huile entraînée.</li>
+<li><strong>Canister</strong> : vapeurs d'essence du réservoir (voir l'injection essence).</li>
+<li><strong>EGR</strong>, <strong>FAP</strong> (en carbure de silicium ou en cordiérite), <strong>SCR</strong> avec AdBlue : vus dans la leçon sur l'échappement. Le SCR convertit 85 à 100 % des NOx quand il est entre 250 et 450 °C environ ; il consomme de l'ordre de 0,5 à 1,5 L d'AdBlue pour 1 000 km selon les véhicules.</li>
+</ul>
+<h3>La surveillance EOBD</h3>
+<p>Depuis les normes Euro 3 (2000 pour l'essence), le calculateur doit surveiller en permanence que la dépollution fonctionne, et prévenir le conducteur par le <strong>voyant moteur</strong> (appelé aussi voyant EOBD ou MIL) :</p>
+<ul>
+<li>efficacité du catalyseur, en comparant les sondes lambda amont et aval ;</li>
+<li>bon fonctionnement de la sonde amont (vitesse de basculement) ;</li>
+<li>ratés de combustion, par les irrégularités de vitesse du vilebrequin : voyant <strong>fixe</strong> s'ils augmentent la pollution, <strong>clignotant</strong> s'ils menacent de détruire le catalyseur ;</li>
+<li>circuits EGR, canister (étanchéité), FAP, SCR, thermostat…</li>
+</ul>
+<h3>Les normes Euro</h3>
+<p>Depuis 1992, l'Union européenne fixe des limites d'émissions de plus en plus sévères pour les véhicules neufs, mesurées en mg par km.</p>
+<table class="tbl"><thead><tr><th>Norme</th><th>Entrée en vigueur (nouveaux types)</th><th>Ce qu'elle a changé</th></tr></thead><tbody>
+<tr><td>Euro 1</td><td>1992</td><td>Catalyseur obligatoire sur les essences</td></tr>
+<tr><td>Euro 3</td><td>2000</td><td>Surveillance EOBD obligatoire</td></tr>
+<tr><td>Euro 4</td><td>2005</td><td>Limites divisées environ par deux</td></tr>
+<tr><td>Euro 5</td><td>2009</td><td>FAP de fait obligatoire sur les diesels (particules limitées à 5 mg/km) ; Euro 5b ajoute une limite en nombre de particules</td></tr>
+<tr><td>Euro 6</td><td>2014 (6d en 2021)</td><td>NOx diesel limités à 80 mg/km (SCR ou piège à NOx) ; mesure en conditions réelles (RDE) ; particules limitées aussi sur les essences à injection directe (d'où les GPF)</td></tr>
+<tr><td>Euro 7</td><td>Adoptée en 2024, application progressive aux nouveaux modèles à partir de fin 2026</td><td>Limites similaires mais plus durables dans le temps, et prise en compte des particules de freins et de l'usure des pneus, applicable aussi aux électriques</td></tr>
+</tbody></table>
+<p>Les mesures se font sur un cycle normalisé sur banc à rouleaux. Le cycle <strong>WLTP</strong> (depuis 2017–2018) a remplacé l'ancien NEDC, jugé trop éloigné de la réalité : il est plus long (30 minutes), plus rapide (vitesse moyenne d'environ 47 km/h, pointes à 131 km/h), avec moins d'arrêts. Il est complété par le test <strong>RDE</strong> (Real Driving Emissions) : la voiture roule sur route ouverte avec un appareil de mesure portable, en ville, sur route et sur autoroute.</p>
+<div class="note tip">Face à une analyse des gaz non conforme au contrôle technique sur un moteur essence, les premières vérifications sont simples : étanchéité de la ligne d'échappement (une prise d'air fausse la sonde lambda), bougies, filtre à air, lecture des codes défaut, et faire chauffer le moteur et le catalyseur avant le passage.</div>`,
+    keys: ['CO, HC, NOx, particules, SO₂, CO₂ (effet de serre)', 'Catalyseur 3 voies : oxyde CO et HC (Pt, Pd), réduit NOx (Rh), exige λ = 1, actif dès 250–300 °C, détruit vers 1 000 °C', 'Air secondaire et piège à NOx (oxyde de baryum : stockage puis déstockage en riche)', 'EOBD : catalyseur, sondes, ratés (voyant fixe ou clignotant)', 'Euro 1 (1992) → Euro 6d (2021) → Euro 7 ; cycle WLTP + test RDE'] }
+]);
+
+addQuiz('alimentation', [
+  { q: 'Un mélange de λ = 0,9 est…', a: ['Pauvre', 'Riche', 'Parfait', 'Impossible'], c: 1, e: 'λ < 1 = moins d\'air que l\'idéal = riche.' },
+  { q: 'Pourquoi certains manuels donnent 15,3:1 au lieu de 14,7:1 ?', a: ['Erreur d\'impression', 'Le calcul est fait avec de l\'heptane pur', 'C\'est pour le diesel', 'C\'est la valeur à froid'], c: 1, e: 'L\'essence réelle, mélange d\'hydrocarbures, est autour de 14,7.' },
+  { q: 'La puissance maximale s\'obtient avec un mélange…', a: ['Légèrement pauvre', 'Légèrement riche', 'Exactement à λ = 1', 'Très pauvre'], c: 1, e: 'Vers R ≈ 1,15–1,2, tout l\'oxygène est utilisé.' },
+  { q: 'Pourquoi les moteurs essence fonctionnent-ils presque toujours à λ = 1 ?', a: ['C\'est le meilleur rendement', 'C\'est le seul point où le catalyseur 3 voies traite CO, HC et NOx', 'C\'est la puissance maximale', 'Pour le turbo'], c: 1, e: 'La dépollution impose ce point.' },
+  { q: 'Le remplissage d\'un réservoir GPL est limité à environ…', a: ['50 %', '80–85 %', '100 %', '110 %'], c: 1, e: 'Il faut laisser de la place à la dilatation du gaz.' },
+  { q: 'Pourquoi le vaporisateur GPL est-il réchauffé par le liquide de refroidissement ?', a: ['Pour aller plus vite', 'La vaporisation absorbe beaucoup de chaleur et le ferait geler', 'Pour le chauffage', 'Pour le turbo'], c: 1, e: 'Comme dans une clim, l\'évaporation refroidit.' },
+  { q: 'L\'étiquette XTL à la pompe désigne…', a: ['De l\'éthanol', 'Un gazole paraffinique de synthèse comme le HVO', 'Du GPL', 'De l\'AdBlue'], c: 1, e: 'Utilisable dans de nombreux diesels récents.' },
+  { q: 'Une sonde de température d\'eau coupée fait croire au calculateur que…', a: ['Le moteur est brûlant', 'Il fait très froid : il enrichit fortement', 'La voiture roule vite', 'La batterie est faible'], c: 1, e: 'Résistance infinie = température très basse pour une CTN.' },
+  { q: 'Le canister contient…', a: ['De l\'AdBlue', 'Du charbon actif qui absorbe les vapeurs d\'essence', 'De l\'huile', 'Un catalyseur'], c: 1, e: 'Les vapeurs sont ensuite aspirées et brûlées par le moteur.' },
+  { q: 'Un turbo souffle à 1,2 bar relatif. Pression absolue dans le collecteur ?', a: ['1,2 bar', '2,2 bars', '0,2 bar', '12 bars'], c: 1, e: '1,2 + 1 bar atmosphérique.' },
+  { q: 'Perte de puissance et code P0299 sur un diesel. Première vérification ?', a: ['Changer le turbo', 'Durites de dépression et électrovanne de régulation', 'Changer les injecteurs', 'Vidanger'], c: 1, e: 'Une simple fuite de dépression empêche le turbo de monter en pression.' },
+  { q: 'Après remplacement d\'un injecteur common rail, il faut…', a: ['Rien de spécial', 'Entrer son code de correction dans le calculateur', 'Changer la pompe', 'Vidanger le réservoir'], c: 1, e: 'Le code compense les écarts de fabrication.' },
+  { q: 'Le postchauffage diesel sert surtout à…', a: ['Démarrer', 'Réduire bruit et fumées bleues après un démarrage à froid', 'Régénérer le FAP', 'Charger la batterie'], c: 1, e: 'Les bougies restent alimentées après le démarrage.' },
+  { q: 'Le rhodium d\'un catalyseur sert à…', a: ['Oxyder le CO', 'Réduire les NOx en azote', 'Piéger la suie', 'Stocker l\'AdBlue'], c: 1, e: 'Le platine et le palladium oxydent CO et HC.' },
+  { q: 'Le piège à NOx se régénère en…', a: ['Passant brièvement en mélange riche', 'Ajoutant de l\'AdBlue', 'Coupant le moteur', 'Chauffant à 1 000 °C'], c: 0, e: 'Le CO et les HC en excès déstockent les nitrates.' },
+  { q: 'Le test RDE mesure les émissions…', a: ['Sur banc à rouleaux uniquement', 'En conditions réelles sur route', 'Au contrôle technique', 'Moteur à l\'arrêt'], c: 1, e: 'Avec un appareil de mesure portable embarqué.' }
+]);
+addCards('alimentation', [
+  ['Dosage / richesse / lambda', 'Dosage = carburant ÷ air ; R = dosage réel ÷ idéal ; λ = 1 ÷ R.'],
+  ['Mélange de puissance max', 'Légèrement riche (R ≈ 1,15–1,2).'],
+  ['Mélange de rendement max', 'Légèrement pauvre (≈ 1/15 à 1/18).'],
+  ['Swirl / tumble', 'Tourbillons du mélange : autour de l\'axe du cylindre / en rouleau vertical.'],
+  ['E10 / E85', 'Jusqu\'à 10 % d\'éthanol / 60 à 85 % (flex-fuel).'],
+  ['EMHV', 'Esters méthyliques d\'huiles végétales (biodiesel).'],
+  ['HVO', 'Huile végétale hydrotraitée, quasi identique au gazole (étiquette XTL).'],
+  ['GPL', 'Butane + propane, liquide sous 7 à 12 bars, bicarburation.'],
+  ['GNV', 'Méthane comprimé à environ 200 bars.'],
+  ['Circuit sans retour', 'Régulateur dans le réservoir, pas de tuyau de retour.'],
+  ['Thermistance CTN', 'Résistance qui diminue quand la température augmente.'],
+  ['Mode stratifié', 'Injection tardive, mélange concentré autour de la bougie, très pauvre.'],
+  ['Valve Schrader (injection)', 'Valve de mesure ou de décompression du circuit carburant.'],
+  ['Régulateur de débit (common rail)', 'Électrovanne qui dose le gazole aspiré par la pompe HP.'],
+  ['Injecteurs codés', 'Code de correction à entrer dans le calculateur après remplacement.'],
+  ['Additif FAP', 'Cérine ou fer : abaisse la combustion des suies vers 450 °C.'],
+  ['Pression absolue', 'Pression relative + pression atmosphérique (≈ 1 bar).'],
+  ['Compresseur Roots', 'Compresseur volumétrique à lobes entraîné par courroie.'],
+  ['Catalyseur 3 voies', 'Oxyde CO et HC, réduit NOx ; exige λ = 1.'],
+  ['Air secondaire', 'Pompe qui souffle de l\'air dans l\'échappement à froid pour chauffer le catalyseur.'],
+  ['Piège à NOx', 'Catalyseur à oxyde de baryum qui stocke les NOx, régénéré en riche.'],
+  ['WLTP / RDE', 'Cycle d\'homologation sur banc / test d\'émissions en conditions réelles.']
+]);
+
+/* ===== ÉLECTRICITÉ : circuits ===== */
+insLessons('electricite', 'bases-elec', [
+  { id: 'circuits', title: 'Montages série, parallèle et schémas électriques', min: 13, deep: true,
+    goals: ['Distinguer un montage en série d\'un montage en parallèle', 'Calculer une résistance équivalente', 'Choisir une section de câble', 'Lire un schéma électrique automobile et ses bornes normalisées'],
+    body: `
+<h3>Le sens du courant</h3>
+<p>Par convention, on dit que le courant va du <strong>+ vers le −</strong> à l'extérieur de la batterie (sens conventionnel, celui des schémas). En réalité, ce sont des électrons qui se déplacent, et ils vont dans l'autre sens, du − vers le + (sens électronique). Pour le diagnostic, seul le sens conventionnel compte : tous les schémas l'utilisent.</p>
+<h3>Le montage en série</h3>
+<p>Les récepteurs sont branchés <strong>les uns à la suite des autres</strong>, sur un seul chemin.</p>
+<ul>
+<li>Le <strong>courant est le même</strong> partout : il n'a qu'un chemin.</li>
+<li>Les <strong>tensions s'additionnent</strong> : la tension de la source se partage entre les récepteurs.</li>
+<li>Les <strong>résistances s'additionnent</strong> : R totale = R1 + R2 + R3…</li>
+<li>Si un élément est coupé, <strong>tout s'arrête</strong> (comme les vieilles guirlandes de Noël).</li>
+</ul>
+<div class="note ex">Deux ampoules de 6 Ω en série sur 12 V : R totale = 12 Ω, I = 12 ÷ 12 = 1 A. Chaque ampoule reçoit 6 V seulement : elles éclairent faiblement. C'est pour ça qu'on ne branche jamais des feux en série. En revanche, les <strong>éléments d'une batterie</strong> sont en série : 6 éléments de 2,1 V donnent 12,6 V.</div>
+<p>Une <strong>mauvaise connexion</strong> (cosse oxydée, masse desserrée) agit comme une résistance ajoutée en série : elle « vole » une partie de la tension au récepteur. C'est exactement ce que mesure le test de chute de tension.</p>
+<h3>Le montage en parallèle</h3>
+<p>Les récepteurs sont branchés <strong>chacun directement</strong> entre le + et le −, sur des chemins séparés.</p>
+<ul>
+<li>La <strong>tension est la même</strong> pour tous : chacun reçoit les 12 V.</li>
+<li>Les <strong>courants s'additionnent</strong> : I totale = I1 + I2 + I3…</li>
+<li>La résistance équivalente <strong>diminue</strong> quand on ajoute des branches : 1/R = 1/R1 + 1/R2… Pour deux résistances : R = (R1 × R2) ÷ (R1 + R2).</li>
+<li>Si un élément est coupé, <strong>les autres continuent</strong>.</li>
+</ul>
+<div class="note ex">Les mêmes ampoules de 6 Ω en parallèle sur 12 V : chacune tire 2 A et éclaire normalement. Courant total : 4 A. Résistance équivalente : (6 × 6) ÷ 12 = 3 Ω. Presque tout le circuit électrique d'une voiture est en parallèle : feux, essuie-glaces, radio, ventilateur reçoivent tous la tension de la batterie, et le courant total dans le câble principal est la somme de tous.</div>
+<p>Deux batteries branchées en parallèle (+ sur +, − sur −, comme lors d'un démarrage avec des câbles) gardent 12 V mais additionnent leurs capacités. En série, on obtiendrait 24 V, comme sur les camions.</p>
+<h3>La section des câbles</h3>
+<p>Un câble a une petite résistance, qui augmente avec sa longueur et diminue avec sa section. Trop fin, il chauffe et fait chuter la tension. La section se choisit selon le courant :</p>
+<table class="tbl"><thead><tr><th>Section (mm²)</th><th>Courant admissible (ordre de grandeur)</th><th>Exemple</th></tr></thead><tbody>
+<tr><td>0,35 à 0,5</td><td>Quelques ampères</td><td>Signaux de capteurs, voyants</td></tr>
+<tr><td>1 à 1,5</td><td>10 à 15 A</td><td>Feux, essuie-glace</td></tr>
+<tr><td>2,5 à 4</td><td>20 à 30 A</td><td>Ventilateur de radiateur, lunette chauffante</td></tr>
+<tr><td>6 à 16</td><td>40 à 100 A</td><td>Alimentation de boîtier fusibles, alternateur</td></tr>
+<tr><td>25 à 50</td><td>Plusieurs centaines d'ampères</td><td>Câble de démarreur, tresse de masse</td></tr>
+</tbody></table>
+<p>Les fils sont repérés par <strong>couleur</strong> (souvent un code constructeur) et par un numéro sur les schémas. Le fusible doit toujours protéger le câble : son calibre est inférieur au courant admissible du fil.</p>
+<h3>Les bornes normalisées</h3>
+<p>Une norme allemande (DIN 72552), utilisée par la plupart des constructeurs, numérote les bornes. Les connaître permet de comprendre n'importe quel schéma :</p>
+<table class="tbl"><thead><tr><th>Borne</th><th>Signification</th></tr></thead><tbody>
+<tr><td>30</td><td>+ permanent de la batterie (présent même contact coupé)</td></tr>
+<tr><td>15</td><td>+ après contact (présent uniquement contact mis)</td></tr>
+<tr><td>31</td><td>Masse (−)</td></tr>
+<tr><td>50</td><td>Commande du démarreur (position démarrage de la clé)</td></tr>
+<tr><td>75 ou X</td><td>+ accessoires, coupé pendant le démarrage pour soulager la batterie</td></tr>
+<tr><td>58</td><td>Feux de position et éclairage</td></tr>
+<tr><td>56, 56a, 56b</td><td>Projecteurs, feux de route, feux de croisement</td></tr>
+<tr><td>85, 86 / 30, 87</td><td>Relais : 85-86 = bobine de commande ; 30-87 = contact de puissance</td></tr>
+<tr><td>D+ ou 61</td><td>Témoin de charge de l'alternateur</td></tr>
+</tbody></table>
+<h3>Lire un schéma électrique</h3>
+<p>Les schémas automobiles modernes sont souvent en <strong>schéma développé</strong> : le + est en haut, la masse en bas, et chaque circuit se lit verticalement, de l'alimentation à la masse en passant par le fusible, l'interrupteur ou le relais, puis le récepteur. Les éléments ne sont pas dessinés à leur place dans la voiture : un tableau ou une référence indique leur emplacement. Les connecteurs portent un numéro et chaque broche (« pin ») un numéro de voie.</p>
+<div class="note tip">Méthode pour un récepteur qui ne fonctionne pas : au schéma, identifie son fusible, sa commande et sa masse. Puis, avec le multimètre, vérifie dans l'ordre : le fusible, la présence de 12 V à l'arrivée du récepteur quand il est commandé, puis la continuité de sa masse (ou la chute de tension côté masse). La panne est forcément sur l'un de ces trois points ou dans le récepteur lui-même.</div>`,
+    keys: ['Série : même courant, tensions et résistances qui s\'additionnent ; un élément coupé coupe tout', 'Parallèle : même tension, courants qui s\'additionnent ; R équivalente plus faible', 'Une mauvaise connexion = résistance en série = chute de tension', 'Section selon le courant ; le fusible protège le câble', 'Bornes : 30 permanent, 15 après contact, 31 masse, 50 démarreur, relais 85/86 et 30/87'] }
+]);
+addQuiz('electricite', [
+  { q: 'Dans un montage en série, le courant…', a: ['Se partage entre les récepteurs', 'Est le même partout', 'Est nul', 'Double'], c: 1, e: 'Il n\'a qu\'un seul chemin.' },
+  { q: 'Deux résistances de 4 Ω en parallèle équivalent à…', a: ['8 Ω', '4 Ω', '2 Ω', '16 Ω'], c: 2, e: '(4 × 4) ÷ (4 + 4) = 2 Ω.' },
+  { q: 'Les feux d\'une voiture sont branchés…', a: ['En série', 'En parallèle', 'Sans fusible', 'Sur la borne 50'], c: 1, e: 'Chacun reçoit les 12 V et fonctionne indépendamment.' },
+  { q: 'La borne 15 désigne…', a: ['Le + permanent', 'Le + après contact', 'La masse', 'Le démarreur'], c: 1, e: '30 = permanent, 31 = masse, 50 = démarreur.' },
+  { q: 'Dans un relais, les bornes 85 et 86 sont…', a: ['Le contact de puissance', 'La bobine de commande', 'Les masses', 'Les fusibles'], c: 1, e: '30-87 est le contact de puissance.' },
+  { q: 'Pourquoi un câble trop fin est-il dangereux ?', a: ['Il pèse trop lourd', 'Il chauffe et fait chuter la tension', 'Il coûte cher', 'Il ne conduit pas'], c: 1, e: 'Sa résistance est trop forte pour le courant demandé.' }
+]);
+addCards('electricite', [
+  ['Montage en série', 'Même courant ; tensions et résistances s\'additionnent.'],
+  ['Montage en parallèle', 'Même tension ; courants s\'additionnent.'],
+  ['Deux résistances en parallèle', 'R = (R1 × R2) ÷ (R1 + R2).'],
+  ['Borne 30', '+ permanent batterie.'],
+  ['Borne 15', '+ après contact.'],
+  ['Borne 31', 'Masse.'],
+  ['Borne 50', 'Commande du démarreur.'],
+  ['Relais 85/86 – 30/87', 'Bobine de commande – contact de puissance.'],
+  ['Schéma développé', '+ en haut, masse en bas, chaque circuit lu verticalement.']
+]);
+
+/* ===== TRANSMISSION : embrayage et BVM ===== */
+insLessons('transmission', 'embrayage', [
+  { id: 'embrayage-plus', title: 'L\'embrayage en détail', min: 11, deep: true,
+    goals: ['Calculer le couple transmissible par un embrayage', 'Comprendre le diaphragme et sa courbe', 'Connaître les commandes par câble et hydrauliques', 'Comprendre les embrayages pilotés'],
+    body: `
+<h3>Le couple transmissible</h3>
+<p>Un embrayage transmet le couple par <strong>frottement</strong>. Le couple maximal qu'il peut transmettre sans patiner dépend de quatre choses :</p>
+<p class="formula">C = n × f × F × Rm</p>
+<ul>
+<li><strong>n</strong> : le nombre de faces de frottement (2 pour un disque classique, une de chaque côté) ;</li>
+<li><strong>f</strong> : le coefficient de frottement de la garniture sur l'acier (environ 0,3 à 0,4) ;</li>
+<li><strong>F</strong> : la force de serrage du mécanisme, en newtons ;</li>
+<li><strong>Rm</strong> : le rayon moyen des garnitures, en mètres (la moyenne entre rayon intérieur et extérieur).</li>
+</ul>
+<div class="note ex">Un disque à 2 faces, f = 0,35, un mécanisme qui serre à 4 000 N, des garnitures de 75 à 115 mm de rayon (rayon moyen 95 mm = 0,095 m) : C = 2 × 0,35 × 4 000 × 0,095 = <strong>266 N·m</strong>. Si le moteur fait 250 N·m, la marge est faible : on prévoit en général un coefficient de sécurité de 1,3 à 1,5. Si les garnitures sont huilées (joint spi de vilebrequin qui fuit), f chute et l'embrayage patine.</div>
+<p>Ça explique les solutions pour les moteurs puissants : plus grand diamètre (Rm), mécanisme plus ferme (F, mais pédale plus dure), garnitures céramiques (f), ou embrayage <strong>bidisque</strong> (n = 4).</p>
+<h3>Le diaphragme</h3>
+<p>Le ressort du mécanisme est un <strong>diaphragme</strong> : une rondelle d'acier conique fendue en « doigts », du même type qu'une rondelle Belleville. Sa particularité : sa courbe effort/déplacement n'est pas droite. Quand on appuie, l'effort monte puis <strong>diminue</strong> sur la fin de course. Résultat : une pédale de plus en plus légère quand on l'enfonce, et une force de serrage qui reste presque constante quand le disque s'use (alors qu'avec des ressorts hélicoïdaux, elle baisserait).</p>
+<p>Le diaphragme est poussé en son centre par la <strong>butée</strong>. Aujourd'hui, la butée est souvent en appui permanent léger (rattrapage automatique) et, de plus en plus, intégrée à un <strong>récepteur hydraulique concentrique</strong> monté autour de l'arbre d'entrée de boîte.</p>
+<h3>Les commandes</h3>
+<table class="tbl"><thead><tr><th>Commande</th><th>Principe</th><th>Points d'attention</th></tr></thead><tbody>
+<tr><td>Par câble</td><td>La pédale tire un câble qui actionne la fourchette. Un système de rattrapage automatique compense l'usure</td><td>Câble grippé ou effiloché : pédale dure ou qui casse</td></tr>
+<tr><td>Hydraulique</td><td>Un émetteur (petit maître-cylindre) à la pédale, une durite, un récepteur. Utilise souvent le liquide de frein du même bocal</td><td>Fuite au récepteur concentrique (il faut déposer la boîte), purge à faire après intervention, pédale qui reste au plancher</td></tr>
+</tbody></table>
+<h3>Les embrayages pilotés</h3>
+<p>Sur les <strong>boîtes robotisées</strong> (boîte manuelle classique dont l'embrayage et le passage des rapports sont automatisés), un <strong>actionneur</strong> électrique ou électro-hydraulique remplace la pédale. Le calculateur décide quand débrayer, à quelle vitesse ré-embrayer (en patinant juste ce qu'il faut) et quel rapport engager, selon des <strong>lois de passage</strong> (économique, sport, neige). Le <strong>kick-down</strong> (enfoncer l'accélérateur à fond) demande un rétrogradage immédiat.</p>
+<p>Il faut faire un <strong>apprentissage</strong> avec l'outil de diagnostic après remplacement de l'embrayage ou de l'actionneur : le calculateur doit mémoriser le point de léchage (là où le disque commence à transmettre). Les boîtes à double embrayage (DSG, EDC, EAT…) sont l'évolution de ce principe.</p>`,
+    keys: ['C = n × f × F × Rm (faces × coefficient × force × rayon moyen)', 'Huile sur les garnitures → f chute → patinage', 'Diaphragme : effort de pédale qui baisse en fin de course, serrage constant malgré l\'usure', 'Commande hydraulique : émetteur, récepteur concentrique, purge', 'Embrayage piloté : actionneur, lois de passage, kick-down, apprentissage du point de léchage'] }
+]);
+
+insLessons('transmission', 'boite', [
+  { id: 'bvm', title: 'La boîte manuelle de l\'intérieur', min: 13, deep: true,
+    goals: ['Suivre le trajet du couple dans une boîte à deux arbres', 'Comprendre le rôle du synchroniseur', 'Comprendre la marche arrière et les verrouillages', 'Calculer un étagement de boîte'],
+    body: `
+<h3>La boîte à deux arbres</h3>
+<p>La plupart des voitures à moteur transversal (traction) utilisent une boîte à <strong>deux arbres</strong> :</p>
+<ul>
+<li>l'<strong>arbre primaire</strong> (ou d'entrée), entraîné par le disque d'embrayage, porte des pignons <strong>fixes</strong> (taillés dans l'arbre ou emmanchés) ;</li>
+<li>l'<strong>arbre secondaire</strong> (ou de sortie) porte des pignons <strong>fous</strong> (libres en rotation sur l'arbre, montés sur roulements à aiguilles), toujours engrenés avec les pignons du primaire. Au bout du secondaire, un petit pignon attaque la <strong>couronne du différentiel</strong>, intégré dans le même carter.</li>
+</ul>
+<p>Tous les pignons tournent en permanence. Au point mort, les pignons fous tournent sans entraîner le secondaire. Passer une vitesse, c'est <strong>rendre un pignon fou solidaire de son arbre</strong> : c'est le travail du baladeur.</p>
+<p>Les boîtes des propulsions (moteur longitudinal) sont plutôt à <strong>trois arbres</strong> : primaire et secondaire alignés, avec un arbre intermédiaire en dessous. Le rapport le plus haut y est souvent en <strong>prise directe</strong> (primaire et secondaire verrouillés ensemble, rapport 1:1).</p>
+<h3>Les dentures</h3>
+<p>Les pignons ont une <strong>denture hélicoïdale</strong> (dents inclinées) : plusieurs dents sont en contact en même temps, l'engrènement est plus silencieux et plus résistant. Inconvénient : une poussée dans l'axe de l'arbre, reprise par des roulements adaptés. La marche arrière a souvent une denture droite, d'où son sifflement caractéristique.</p>
+<h3>Le synchroniseur</h3>
+<p>Pour crabotter un pignon fou à son arbre, il faut que les deux tournent <strong>exactement à la même vitesse</strong>, sinon les crabots s'entrechoquent (le fameux craquement). Le synchroniseur s'en charge :</p>
+<ol class="steps">
+<li>Le <strong>moyeu</strong> est fixé sur l'arbre secondaire (par des cannelures). Autour de lui coulisse le <strong>baladeur</strong> (manchon), poussé par la fourchette.</li>
+<li>Quand le baladeur avance, il pousse d'abord une <strong>bague de synchronisation</strong> conique (en laiton ou avec garniture) contre un cône du pignon fou. Le frottement freine ou accélère le pignon jusqu'à ce qu'il tourne à la même vitesse que l'arbre.</li>
+<li>Tant que les vitesses diffèrent, les dents de la bague bloquent le passage du baladeur (c'est le « verrouillage » qui fait que le levier résiste).</li>
+<li>Une fois synchronisé, le baladeur passe à travers la bague et engrène sur les <strong>crabots</strong> du pignon : la vitesse est engagée.</li>
+</ol>
+<div class="note ex">Une vitesse qui « craque » toujours au même rapport, surtout en passant vite, indique une bague de synchronisation usée sur ce rapport (souvent la 2e, la plus sollicitée). Si toutes les vitesses craquent, on soupçonne plutôt un embrayage qui ne débraye pas complètement (garde, purge, disque collé). Les synchros modernes sont souvent doubles ou triples sur les premiers rapports pour réduire l'effort.</div>
+<h3>La marche arrière et les sécurités</h3>
+<p>Pour inverser le sens de rotation, on intercale un troisième pignon, le <strong>pignon de renvoi</strong> (ou inverseur), entre un pignon du primaire et un du secondaire. Souvent non synchronisée, la marche arrière ne doit être passée qu'à l'arrêt complet. Un verrou (bague à soulever, levier à enfoncer) empêche de la passer par erreur.</p>
+<ul>
+<li>Le <strong>verrouillage des vitesses</strong> (billes et ressorts sur les axes de fourchettes) maintient le rapport engagé et donne les « crans ».</li>
+<li>L'<strong>interverrouillage</strong> empêche d'engager deux vitesses en même temps, ce qui bloquerait la boîte.</li>
+<li>Un <strong>contacteur de marche arrière</strong> allume les feux de recul.</li>
+</ul>
+<h3>L'étagement</h3>
+<p>Chaque rapport = nombre de dents du pignon mené ÷ nombre de dents du pignon menant (comme vu dans la leçon sur les engrenages). Le rapport total = rapport de boîte × rapport du pont (différentiel).</p>
+<div class="note ex">Boîte 5 vitesses typique : 1re 3,45 ; 2e 1,87 ; 3e 1,28 ; 4e 0,97 ; 5e 0,76. Pont 4,06. En 5e, rapport total = 0,76 × 4,06 ≈ 3,09 : le moteur fait 3,09 tours pour un tour de roue. Avec des roues de 1,9 m de circonférence, à 3 000 tr/min : 3 000 ÷ 3,09 × 1,9 × 60 ÷ 1 000 ≈ <strong>111 km/h</strong>. Note que l'écart entre les rapports se resserre vers le haut (3,45 ÷ 1,87 = 1,84 mais 0,97 ÷ 0,76 = 1,28) : à haute vitesse, la résistance de l'air demande de ne pas trop faire chuter le régime au passage de rapport.</div>
+<h3>L'entretien</h3>
+<p>La boîte manuelle est lubrifiée par barbotage dans une huile spécifique (souvent une 75W-80 ou 75W-90). Beaucoup de constructeurs la déclarent « à vie », mais une vidange vers 100 000 à 150 000 km améliore souvent le passage des rapports. Le niveau se contrôle par le bouchon de remplissage latéral : l'huile doit affleurer l'orifice.</p>`,
+    keys: ['Deux arbres : primaire à pignons fixes, secondaire à pignons fous + couronne de différentiel', 'Denture hélicoïdale : silencieuse mais poussée axiale', 'Synchroniseur : la bague conique égalise les vitesses avant le crabotage', 'Une vitesse qui craque seule = synchro usé ; toutes = embrayage', 'Marche arrière par pignon de renvoi ; verrouillage et interverrouillage', 'Rapport total = rapport de boîte × rapport de pont'] }
+]);
+addQuiz('transmission', [
+  { q: 'Dans C = n × f × F × Rm, que vaut n pour un disque classique ?', a: ['1', '2', '4', '0,35'], c: 1, e: 'Une face de frottement de chaque côté du disque.' },
+  { q: 'Pourquoi un embrayage patine-t-il quand une fuite d\'huile atteint le disque ?', a: ['La force F augmente', 'Le coefficient de frottement f chute', 'Le rayon change', 'Le moteur perd du couple'], c: 1, e: 'Le couple transmissible est proportionnel à f.' },
+  { q: 'Avantage du diaphragme ?', a: ['Pédale de plus en plus dure', 'Serrage presque constant malgré l\'usure', 'Il ne s\'use jamais', 'Il remplace le disque'], c: 1, e: 'Sa courbe effort/déplacement n\'est pas linéaire.' },
+  { q: 'Dans une boîte à deux arbres, les pignons fous sont sur…', a: ['L\'arbre primaire', 'L\'arbre secondaire', 'Le volant moteur', 'Le différentiel'], c: 1, e: 'Le baladeur les rend solidaires de l\'arbre secondaire.' },
+  { q: 'Le synchroniseur sert à…', a: ['Changer le rapport de pont', 'Égaliser les vitesses du pignon et de l\'arbre avant le crabotage', 'Lubrifier', 'Inverser le sens'], c: 1, e: 'Par frottement d\'une bague conique.' },
+  { q: 'Seule la 2e craque au passage. Cause probable ?', a: ['Embrayage', 'Synchro de 2e usé', 'Différentiel', 'Huile moteur'], c: 1, e: 'Si toutes craquent, on regarde plutôt l\'embrayage.' },
+  { q: 'Comment la marche arrière inverse-t-elle le sens ?', a: ['Par le différentiel', 'Par un pignon de renvoi intercalé', 'Le moteur tourne à l\'envers', 'Par l\'embrayage'], c: 1, e: 'Un troisième pignon inverse la rotation.' },
+  { q: 'Rapport de 5e 0,8, pont 4. Rapport total ?', a: ['4,8', '3,2', '5', '0,2'], c: 1, e: '0,8 × 4 = 3,2.' }
+]);
+addCards('transmission', [
+  ['Couple transmissible par un embrayage', 'C = n × f × F × Rm.'],
+  ['Diaphragme', 'Rondelle conique fendue servant de ressort d\'embrayage.'],
+  ['Récepteur concentrique', 'Cylindre hydraulique intégrant la butée, autour de l\'arbre d\'entrée.'],
+  ['Point de léchage', 'Position où le disque commence à transmettre ; appris par le calculateur.'],
+  ['Pignon fou', 'Pignon libre sur son arbre, rendu solidaire par le baladeur.'],
+  ['Synchroniseur', 'Bague conique qui égalise les vitesses avant le crabotage.'],
+  ['Crabots', 'Dents latérales qui verrouillent le pignon au baladeur.'],
+  ['Prise directe', 'Rapport 1:1, primaire et secondaire verrouillés ensemble.'],
+  ['Interverrouillage', 'Empêche d\'engager deux vitesses à la fois.'],
+  ['Pignon de renvoi', 'Pignon intercalé qui inverse le sens pour la marche arrière.']
+]);
+
+/* ===== FREINAGE : tambour, assistance, ABS ===== */
+insLessons('freinage', 'disques', [
+  { id: 'tambour-commande', title: 'Tambours, maître-cylindre et frein de parking', min: 12, deep: true,
+    goals: ['Comprendre le fonctionnement d\'un frein à tambour et son auto-serrage', 'Connaître le maître-cylindre tandem et les circuits en X', 'Comprendre les freins de stationnement mécaniques et électriques', 'Connaître le liquide de frein'],
+    body: `
+<h3>Le frein à tambour</h3>
+<p>Un tambour en fonte tourne avec la roue. À l'intérieur, fixées sur un plateau, deux <strong>mâchoires</strong> garnies sont écartées par un <strong>cylindre de roue</strong> (deux petits pistons poussés par le liquide) et plaquées contre l'intérieur du tambour. Des ressorts de rappel les ramènent au relâchement.</p>
+<p>Sa particularité : l'<strong>auto-serrage</strong>. La mâchoire dont l'extrémité poussée est orientée dans le sens de rotation (mâchoire <strong>comprimée</strong>, ou primaire) est entraînée par le tambour et se coince davantage : elle freine beaucoup plus que l'autre (mâchoire <strong>tendue</strong>, ou secondaire). D'où un freinage puissant pour un effort faible, qui convient au frein de parking. Le revers : un freinage moins stable quand le coefficient de frottement varie, et une mauvaise évacuation de la chaleur (le tambour enferme la chaleur et se dilate, ce qui éloigne les garnitures : c'est l'<strong>évanouissement</strong> ou « fading »).</p>
+<ul>
+<li>Un <strong>rattrapage automatique</strong> (biellette à crans ou molette) compense l'usure des garnitures.</li>
+<li>La mâchoire primaire s'use plus vite : sa garniture est parfois plus longue.</li>
+<li>Contrôle : épaisseur des garnitures, diamètre intérieur maximum gravé sur le tambour, fuite au cylindre de roue (traces de liquide).</li>
+</ul>
+<h3>Le maître-cylindre tandem</h3>
+<p>Pour la sécurité, la loi impose deux circuits de freinage indépendants. Le maître-cylindre est donc <strong>tandem</strong> : deux pistons l'un derrière l'autre dans le même corps, chacun alimentant un circuit. Si un circuit fuit, son piston va en butée et pousse mécaniquement le second : on garde environ la moitié du freinage, avec une course de pédale plus longue.</p>
+<p>La répartition la plus courante sur les tractions est le <strong>circuit en X</strong> (ou en diagonale) : un circuit freine l'avant gauche et l'arrière droit, l'autre l'avant droit et l'arrière gauche. Ainsi, en cas de panne, il reste toujours une roue avant (qui freine le plus) de chaque circuit. Les propulsions utilisent souvent une répartition <strong>avant/arrière</strong> (en H).</p>
+<h3>Le liquide de frein</h3>
+<ul>
+<li>Il est <strong>hygroscopique</strong> : il absorbe l'humidité de l'air. Avec 3 % d'eau, son point d'ébullition passe d'environ 230 à 260 °C (neuf, DOT 4) à environ 150 à 160 °C. En descente de col, il peut bouillir : la vapeur se comprime, la pédale s'enfonce sans freiner.</li>
+<li>Normes : <strong>DOT 3, DOT 4, DOT 5.1</strong> (à base de glycol, miscibles entre eux) ; DOT 5 (silicone, non miscible, rare).</li>
+<li>On le remplace tous les 2 ans environ, et on contrôle son taux d'eau ou son point d'ébullition au testeur.</li>
+<li>Il attaque la peinture : on essuie tout de suite.</li>
+</ul>
+<h3>Le frein de stationnement</h3>
+<p><strong>Mécanique</strong> : un levier tire des câbles qui actionnent les mâchoires (tambours) ou un levier sur l'étrier arrière (disques). Un tambour intégré au disque (« drum in hat ») existe aussi.</p>
+<p><strong>Électrique</strong> (FSE, frein de parking électrique) : un bouton commande un calculateur qui actionne soit un moteur central tirant les câbles, soit, le plus souvent, des <strong>moteurs-réducteurs directement montés sur les étriers arrière</strong>. Fonctions associées : serrage automatique à l'arrêt du moteur, desserrage automatique au démarrage, aide au démarrage en côte, freinage d'urgence si on maintient le bouton en roulant.</p>
+<div class="note warn">Sur un frein de parking électrique, on ne repousse pas le piston d'étrier à la main pour changer les plaquettes arrière : on risque de casser le moteur-réducteur. Il faut d'abord mettre le système en <strong>mode maintenance</strong> (avec l'outil de diagnostic ou une procédure au tableau de bord) pour rentrer les pistons, puis refaire un calibrage après intervention.</div>`,
+    keys: ['Tambour : mâchoire comprimée auto-serrante, fading à chaud, rattrapage automatique', 'Maître-cylindre tandem : deux circuits indépendants', 'Circuit en X : chaque circuit garde une roue avant', 'Liquide hygroscopique ; DOT 3/4/5.1 miscibles ; remplacement ≈ 2 ans', 'Frein de parking électrique : mode maintenance avant de changer les plaquettes'] }
+]);
+
+insLessons('freinage', 'repartition', [
+  { id: 'assistance-abs', title: 'Servofrein, ABS et ESP en détail', min: 14, deep: true,
+    goals: ['Calculer l\'effort fourni par un servofrein', 'Comprendre les phases d\'une régulation ABS', 'Distinguer les capteurs de roue actifs et passifs', 'Comprendre ce que mesure l\'ESP et comment il agit'],
+    body: `
+<h3>Le servofrein à dépression</h3>
+<p>Le servofrein (ou « mastervac ») est un grand boîtier rond entre la pédale et le maître-cylindre. À l'intérieur, une <strong>membrane</strong> sépare deux chambres.</p>
+<ul>
+<li>Au repos, les deux chambres sont sous <strong>dépression</strong> (reliées au collecteur d'admission ou à une pompe à vide).</li>
+<li>Quand on appuie, un <strong>clapet</strong> isole la chambre arrière et y laisse entrer l'air atmosphérique.</li>
+<li>La différence de pression entre les deux faces pousse la membrane, qui ajoute sa force à celle du pied.</li>
+</ul>
+<div class="note ex">Une membrane de 230 mm de diamètre a une surface d'environ 415 cm², soit 0,0415 m². Avec une différence de pression de 0,7 bar (70 000 Pa) : F = 70 000 × 0,0415 ≈ <strong>2 900 N</strong>, l'équivalent d'environ 290 kg. Le servofrein multiplie l'effort du pied par 4 à 6 environ. Pour aller plus loin, on monte un servofrein « tandem » (deux membranes) dans le même diamètre.</div>
+<p>Les diesels, et les essences à injection directe ou à levée variable, n'ont pas assez de dépression à l'admission : une <strong>pompe à vide</strong> mécanique (entraînée par l'arbre à cames) ou électrique la fournit. Sur les hybrides et électriques, on trouve des pompes à vide électriques ou des <strong>servofreins électromécaniques</strong> (un moteur électrique pousse le maître-cylindre), indispensables pour combiner freinage hydraulique et régénératif.</p>
+<div class="note tip">Test du servofrein : moteur arrêté, pompe plusieurs fois la pédale pour vider la réserve, garde le pied appuyé et démarre. La pédale doit s'enfoncer légèrement : l'assistance arrive. Si rien ne bouge, vérifie la durite et le clapet anti-retour. Un sifflement à l'appui de la pédale avec un ralenti instable signale une membrane percée.</div>
+<h3>L'ABS : le circuit hydraulique</h3>
+<p>Le <strong>groupe hydraulique</strong> de l'ABS est placé entre le maître-cylindre et les roues. Pour chaque roue (ou chaque circuit), il contient :</p>
+<ul>
+<li>une <strong>électrovanne d'admission</strong>, <strong>ouverte au repos</strong> : sans courant, le freinage passe normalement (sécurité en cas de panne de l'ABS) ;</li>
+<li>une <strong>électrovanne d'échappement</strong>, <strong>fermée au repos</strong> ;</li>
+<li>un <strong>accumulateur basse pression</strong> qui reçoit le liquide évacué ;</li>
+<li>une <strong>pompe de retour</strong> électrique qui renvoie ce liquide vers le maître-cylindre (c'est elle qui fait vibrer la pédale).</li>
+</ul>
+<h3>Les phases de régulation</h3>
+<table class="tbl"><thead><tr><th>Phase</th><th>Admission</th><th>Échappement</th><th>Effet</th></tr></thead><tbody>
+<tr><td>Freinage normal</td><td>Ouverte</td><td>Fermée</td><td>La pression monte comme sans ABS</td></tr>
+<tr><td>Maintien</td><td>Fermée</td><td>Fermée</td><td>La pression de la roue reste constante</td></tr>
+<tr><td>Baisse</td><td>Fermée</td><td>Ouverte</td><td>Le liquide part vers l'accumulateur : la roue se libère</td></tr>
+<tr><td>Remontée</td><td>Ouverte (par impulsions)</td><td>Fermée</td><td>La pression revient progressivement</td></tr>
+</tbody></table>
+<p>Ce cycle se répète environ <strong>5 à 15 fois par seconde</strong> et par roue. Le calculateur cherche à maintenir chaque roue autour du <strong>glissement optimal</strong> (environ 10 à 30 %) : c'est là que le pneu fournit l'adhérence maximale tout en restant directionnel.</p>
+<h3>Les capteurs de roue</h3>
+<table class="tbl"><thead><tr><th></th><th>Capteur passif (inductif)</th><th>Capteur actif (Hall ou magnétorésistif)</th></tr></thead><tbody>
+<tr><td>Cible</td><td>Couronne dentée en acier</td><td>Bague magnétique multipolaire (souvent dans le joint du roulement) ou couronne dentée</td></tr>
+<tr><td>Alimentation</td><td>Aucune, 2 fils</td><td>Alimenté par le calculateur, 2 fils</td></tr>
+<tr><td>Signal</td><td>Sinusoïde dont l'amplitude et la fréquence augmentent avec la vitesse ; trop faible en dessous de quelques km/h</td><td>Signal carré d'amplitude constante, fréquence proportionnelle à la vitesse ; détecte jusqu'à l'arrêt complet et le sens de rotation</td></tr>
+<tr><td>Contrôle</td><td>Résistance (environ 1 à 2 kΩ), tension alternative en tournant la roue</td><td>Pas de mesure de résistance utile ; on contrôle le signal en données en direct ou à l'oscilloscope</td></tr>
+</tbody></table>
+<div class="note ex">Voyant ABS allumé avec un code « signal capteur roue arrière droite incohérent » : causes fréquentes, dans l'ordre, un capteur encrassé de limaille, une cible fêlée ou rouillée (sur les arbres de transmission), un roulement remplacé monté à l'envers (la bague magnétique doit être côté capteur), un faisceau abîmé. On compare les vitesses des quatre roues en données en direct pendant un essai.</div>
+<h3>L'ESP en détail</h3>
+<p>L'ESP compare en permanence la trajectoire <strong>voulue</strong> par le conducteur et la trajectoire <strong>réelle</strong>. Il utilise en plus des capteurs de roue :</p>
+<ul>
+<li>un <strong>capteur d'angle volant</strong> : la trajectoire voulue ;</li>
+<li>un <strong>capteur de lacet</strong> (vitesse de rotation de la voiture autour de son axe vertical) et un <strong>accéléromètre transversal</strong> : la trajectoire réelle ;</li>
+<li>un <strong>capteur de pression</strong> du maître-cylindre : l'effort de freinage du conducteur.</li>
+</ul>
+<p>S'il détecte un <strong>sous-virage</strong> (la voiture tourne moins que le volant), il freine la roue arrière intérieure au virage. S'il détecte un <strong>survirage</strong> (l'arrière décroche), il freine la roue avant extérieure. Dans les deux cas, il peut aussi réduire le couple moteur. Pour freiner une roue sans que le conducteur appuie, la pompe du groupe hydraulique génère elle-même la pression, grâce à des électrovannes supplémentaires.</p>
+<p>Les mêmes composants permettent : l'<strong>ASR</strong> (antipatinage à l'accélération), le <strong>MSR</strong> (régulation du frein moteur : il ré-accélère légèrement si les roues motrices se bloquent en rétrogradant sur sol glissant), l'<strong>AFU</strong> (aide au freinage d'urgence : pleine pression si la pédale est enfoncée très vite), l'aide au démarrage en côte, et le freinage automatique d'urgence avec la caméra et le radar.</p>
+<div class="note warn">Après remplacement ou démontage du capteur d'angle volant, ou après un réglage de géométrie, il faut souvent <strong>initialiser le zéro</strong> du capteur avec l'outil de diagnostic. Sinon, l'ESP croit que la voiture tourne et peut freiner une roue en ligne droite.</div>`,
+    keys: ['Servofrein : différence de pression × surface de membrane ; pompe à vide sur diesel', 'ABS : admission ouverte au repos, échappement fermé au repos, accumulateur, pompe de retour', 'Phases : maintien, baisse, remontée, 5 à 15 fois par seconde ; glissement optimal 10–30 %', 'Capteur passif : sinusoïde ; actif : carré, détecte l\'arrêt', 'ESP : angle volant + lacet + accéléromètre ; sous-virage → roue AR intérieure ; survirage → roue AV extérieure'] }
+]);
+addQuiz('freinage', [
+  { q: 'Dans un frein à tambour, la mâchoire comprimée…', a: ['Freine moins', 'Est entraînée par le tambour et freine plus (auto-serrage)', 'Ne touche pas le tambour', 'Sert au parking seulement'], c: 1, e: 'Son extrémité poussée est orientée dans le sens de rotation.' },
+  { q: 'Le circuit de freinage en X relie…', a: ['Les deux roues avant', 'Une roue avant et la roue arrière opposée', 'Les deux roues gauches', 'Les quatre roues'], c: 1, e: 'Chaque circuit garde une roue avant en cas de panne.' },
+  { q: 'Pourquoi remplace-t-on le liquide de frein tous les 2 ans ?', a: ['Il s\'évapore', 'Il absorbe l\'eau et son point d\'ébullition baisse', 'Il change de couleur', 'Il gèle'], c: 1, e: 'Il est hygroscopique.' },
+  { q: 'Avant de changer les plaquettes arrière avec frein de parking électrique…', a: ['On repousse les pistons à la pince', 'On passe en mode maintenance', 'On débranche la batterie seulement', 'Rien de spécial'], c: 1, e: 'Sinon le moteur-réducteur peut casser.' },
+  { q: 'Membrane de 0,04 m², différence de pression 70 000 Pa. Force d\'assistance ?', a: ['280 N', '2 800 N', '28 000 N', '1 750 N'], c: 1, e: '70 000 × 0,04 = 2 800 N.' },
+  { q: 'Au repos, l\'électrovanne d\'admission de l\'ABS est…', a: ['Fermée', 'Ouverte', 'À moitié ouverte', 'Débranchée'], c: 1, e: 'Si l\'ABS tombe en panne, on garde un freinage classique.' },
+  { q: 'Pendant la phase de « baisse » de l\'ABS…', a: ['Admission ouverte, échappement fermé', 'Admission fermée, échappement ouvert', 'Les deux fermées', 'Les deux ouvertes'], c: 1, e: 'Le liquide part vers l\'accumulateur.' },
+  { q: 'Un capteur de roue actif…', a: ['Produit une sinusoïde', 'Donne un signal carré et détecte l\'arrêt', 'N\'a pas besoin d\'alimentation', 'Se teste à l\'ohmmètre'], c: 1, e: 'Il est alimenté par le calculateur.' },
+  { q: 'En survirage, l\'ESP freine…', a: ['La roue arrière intérieure', 'La roue avant extérieure', 'Les quatre roues', 'Aucune roue'], c: 1, e: 'Cela crée un couple qui redresse la voiture.' },
+  { q: 'Le MSR…', a: ['Empêche le blocage des roues motrices au frein moteur', 'Freine à l\'arrêt', 'Gère la clim', 'Mesure la pression des pneus'], c: 0, e: 'Il ré-accélère légèrement le moteur.' }
+]);
+addCards('freinage', [
+  ['Auto-serrage', 'La mâchoire comprimée est entraînée par le tambour et freine plus.'],
+  ['Fading', 'Perte d\'efficacité des freins quand ils chauffent trop.'],
+  ['Maître-cylindre tandem', 'Deux pistons, deux circuits indépendants.'],
+  ['Circuit en X', 'AV gauche + AR droite / AV droite + AR gauche.'],
+  ['Liquide hygroscopique', 'Absorbe l\'eau : point d\'ébullition qui baisse.'],
+  ['DOT 3 / 4 / 5.1', 'Liquides glycol miscibles ; DOT 5 silicone non miscible.'],
+  ['Mode maintenance FSE', 'Rentre les pistons du frein de parking électrique.'],
+  ['Pompe à vide', 'Fournit la dépression du servofrein sur les diesels.'],
+  ['Électrovannes ABS au repos', 'Admission ouverte, échappement fermée.'],
+  ['Glissement optimal', 'Environ 10 à 30 % : adhérence maximale.'],
+  ['Capteur de lacet', 'Mesure la rotation de la voiture autour de son axe vertical.'],
+  ['ASR / MSR / AFU', 'Antipatinage / régulation frein moteur / aide au freinage d\'urgence.']
+]);
+
+/* ===== LIAISONS AU SOL : compléments ===== */
+insLessons('liaisons', 'amortissement', [
+  { id: 'types-suspension', title: 'Ressorts, essieux et suspensions pilotées', min: 13, deep: true,
+    goals: ['Calculer la raideur d\'un ressort', 'Connaître les différents ressorts', 'Distinguer les types d\'essieux et de trains', 'Comprendre les suspensions pilotées et actives'],
+    body: `
+<h3>La raideur d'un ressort</h3>
+<p>La <strong>raideur</strong> (ou flexibilité inversée) d'un ressort indique la force nécessaire pour le comprimer d'une certaine distance :</p>
+<p class="formula">K = F ÷ x</p>
+<p>avec F en newtons et x (l'écrasement) en millimètres ou en mètres.</p>
+<div class="note ex">Un ressort qui s'écrase de 50 mm sous une charge de 2 500 N a une raideur de 2 500 ÷ 50 = <strong>50 N/mm</strong>. Si on charge la voiture de 100 kg supplémentaires sur cette roue (≈ 1 000 N), il s'écrase de 1 000 ÷ 50 = 20 mm de plus. Un ressort à raideur constante est dit <strong>linéaire</strong>. Un ressort à spires de pas variable ou de diamètre variable est <strong>progressif</strong> : souple sur les petites bosses, plus ferme quand il est très comprimé.</div>
+<h3>Les types de ressorts</h3>
+<table class="tbl"><thead><tr><th>Ressort</th><th>Principe</th><th>Usage</th></tr></thead><tbody>
+<tr><td>Hélicoïdal</td><td>Fil d'acier enroulé qui travaille en torsion</td><td>La grande majorité des voitures</td></tr>
+<tr><td>À lames</td><td>Lames d'acier superposées qui fléchissent ; elles guident aussi l'essieu</td><td>Utilitaires et pick-up (essieu arrière rigide)</td></tr>
+<tr><td>Barre de torsion</td><td>Barre d'acier fixée d'un côté, tordue de l'autre par le bras</td><td>Anciens essieux arrière (Peugeot, Renault), certains 4x4</td></tr>
+<tr><td>Pneumatique</td><td>Coussin d'air sous pression, gonflé par un compresseur</td><td>Haut de gamme, camions, utilitaires : raideur et hauteur variables</td></tr>
+<tr><td>Hydropneumatique</td><td>Sphère contenant de l'azote séparé d'un liquide par une membrane</td><td>Citroën historiques (DS, CX, XM, C5 jusqu'en 2017)</td></tr>
+</tbody></table>
+<p>La <strong>barre antiroulis</strong> (ou barre stabilisatrice) est elle aussi une barre de torsion : elle relie les deux roues d'un même essieu et ne travaille que lorsqu'elles se déplacent différemment (en virage), pour limiter l'inclinaison de la caisse.</p>
+<h3>Les types de trains</h3>
+<dl class="defs">
+<dt>Essieu rigide</dt><dd>Les deux roues sont reliées par une poutre : si l'une monte, l'autre s'incline. Robuste et simple, il reste sur les utilitaires et 4x4.</dd>
+<dt>Essieu semi-rigide (à traverse déformable)</dt><dd>Deux bras longitudinaux reliés par une traverse qui se tord. C'est le train arrière de la plupart des tractions compactes : bon marché, compact, efficace.</dd>
+<dt>Pseudo-McPherson</dt><dd>Le train avant le plus répandu : l'ensemble ressort-amortisseur forme lui-même le pivot de la roue en haut, et un triangle inférieur la guide en bas. Compact et léger.</dd>
+<dt>Double triangle</dt><dd>Deux bras en triangle (haut et bas) guident la roue. Meilleur contrôle du carrossage pendant les débattements : sportives, haut de gamme.</dd>
+<dt>Multibras</dt><dd>Trois à cinq bras séparés, chacun réglant un paramètre. Excellent compromis confort-tenue de route, plus cher : arrière des berlines et SUV haut de gamme.</dd>
+</dl>
+<h3>Les suspensions pilotées et actives</h3>
+<ul>
+<li><strong>Amortissement piloté</strong> : des électrovannes dans les amortisseurs (ou un fluide <strong>magnétorhéologique</strong> dont la viscosité change avec un champ magnétique) adaptent la fermeté en quelques millisecondes, selon les capteurs (accéléromètres, hauteur de caisse, angle volant, vitesse) et le mode choisi.</li>
+<li><strong>Suspension pneumatique</strong> : un compresseur, un réservoir et des électrovannes gonflent ou dégonflent chaque coussin. Correcteur d'assiette automatique quelle que soit la charge, hauteur variable (abaissée sur autoroute, relevée en chemin).</li>
+<li><strong>Suspension active</strong> : des vérins ou des moteurs électriques peuvent pousser ou tirer la roue, et même anticiper les bosses grâce à une caméra qui lit la route.</li>
+</ul>
+<div class="note ex">Panne classique de suspension pneumatique : la voiture est affaissée d'un coin le matin. Cause habituelle : un coussin fissuré (caoutchouc vieilli) ou une électrovanne qui fuit. Le compresseur, qui tourne trop longtemps pour compenser, finit par griller. Il faut d'abord trouver la fuite (eau savonneuse) avant de changer le compresseur.</div>`,
+    keys: ['Raideur K = F ÷ x (N/mm) ; ressort linéaire ou progressif', 'Hélicoïdal, à lames, barre de torsion, pneumatique, hydropneumatique', 'Barre antiroulis : barre de torsion qui ne travaille qu\'en virage', 'Essieu rigide, semi-rigide, McPherson, double triangle, multibras', 'Amortissement piloté, pneumatique (fuite → compresseur grillé), active'] }
+]);
+
+insLessons('liaisons', 'direction', [
+  { id: 'direction-plus', title: 'Direction : démultiplication et épure de Jeantaud', min: 12, deep: true,
+    goals: ['Calculer la démultiplication d\'une direction', 'Comparer crémaillère et boîtier à billes', 'Comprendre les assistances hydraulique et électrique', 'Comprendre pourquoi les roues ne braquent pas du même angle'],
+    body: `
+<h3>La démultiplication</h3>
+<p>La direction doit permettre de tourner les roues avec un effort raisonnable : on démultiplie. La <strong>démultiplication</strong> compare l'angle de rotation du volant à l'angle de braquage des roues, ou (c'est équivalent) l'effort aux roues à l'effort au volant.</p>
+<div class="note ex">Le volant fait 1,5 tour d'un côté (540°) pour braquer les roues de 34° : 540 ÷ 34 ≈ 16. On dit que la direction a un rapport de 16:1 (ou une démultiplication de 1/16). Si l'effort de braquage aux roues est de 32 daN·m et le rapport de 16, le conducteur fournit 32 ÷ 16 = 2 daN·m (sans assistance, et sans compter les pertes). Une direction de sport est plus « directe » (rapport 12 à 14), une direction de camion plus démultipliée (20 et plus). Le nombre de <strong>tours de volant de butée à butée</strong> (souvent 2,5 à 3) est l'indicateur le plus parlant.</div>
+<p>Une bonne direction doit aussi être <strong>réversible</strong> : les roues doivent pouvoir faire tourner le volant pour qu'il revienne en ligne droite en sortie de virage (grâce à la chasse et à l'inclinaison du pivot). Mais pas trop : les chocs de la route ne doivent pas arracher le volant des mains.</p>
+<h3>Les mécanismes</h3>
+<table class="tbl"><thead><tr><th>Mécanisme</th><th>Principe</th><th>Usage</th></tr></thead><tbody>
+<tr><td>Pignon et crémaillère</td><td>Un pignon au bout de la colonne engrène sur une barre dentée qui coulisse latéralement et pousse les biellettes</td><td>Presque toutes les voitures : simple, précis, léger</td></tr>
+<tr><td>Boîtier à vis et billes recirculantes</td><td>La colonne fait tourner une vis ; des billes roulent entre la vis et un écrou qui se déplace et entraîne un secteur denté</td><td>4x4, utilitaires lourds, camions : robuste, peu réversible</td></tr>
+</tbody></table>
+<p>Les <strong>biellettes de direction</strong> (avec leurs <strong>rotules axiales</strong> côté crémaillère et <strong>rotules de direction</strong> côté pivot) transmettent le mouvement. Leur longueur réglable permet d'ajuster le parallélisme. Des <strong>soufflets</strong> protègent la crémaillère : un soufflet déchiré laisse entrer eau et sable, et la crémaillère prend du jeu.</p>
+<h3>Les assistances</h3>
+<ul>
+<li><strong>Hydraulique</strong> : une pompe entraînée par le moteur envoie de l'huile à une <strong>valve rotative</strong> dans le boîtier. Quand on tourne le volant, une barre de torsion se tord légèrement, la valve s'ouvre d'un côté et dirige l'huile sous pression vers une des deux chambres d'un <strong>vérin double effet</strong> intégré à la crémaillère. Inconvénient : la pompe tourne en permanence et consomme de l'énergie.</li>
+<li><strong>Électrohydraulique</strong> : même principe, mais la pompe est entraînée par un moteur électrique, qui ne tourne que lorsque c'est nécessaire.</li>
+<li><strong>Électrique</strong> (aujourd'hui la norme) : un <strong>capteur de couple</strong> mesure la torsion de la colonne, un calculateur commande un moteur électrique (sur la colonne, sur le pignon ou directement sur la crémaillère). Assistance variable selon la vitesse, consommation quasi nulle en ligne droite, et possibilité de diriger la voiture sans le conducteur (aide au maintien dans la voie, park assist).</li>
+</ul>
+<h3>L'épure de Jeantaud</h3>
+<p>En virage, la roue intérieure décrit un cercle plus petit que la roue extérieure. Pour qu'aucun pneu ne ripe, les axes des quatre roues doivent concourir en un même point (le centre du virage). La roue avant <strong>intérieure doit donc braquer plus</strong> que la roue extérieure.</p>
+<p>On l'obtient par la géométrie des <strong>leviers de direction</strong> (sur les pivots) : ils ne sont pas parallèles mais inclinés vers l'intérieur, de façon que leurs prolongements se croisent à peu près au milieu de l'essieu arrière. C'est l'<strong>épure de Jeantaud</strong> (aussi appelée géométrie d'Ackermann).</p>
+<div class="note ex">Exemple de mesure sur un véhicule : roue intérieure braquée à environ 39,7°, roue extérieure à environ 35,7°. La différence (le <strong>pincement en virage</strong>, ou divergence en braquage) est contrôlée sur les plateaux pivotants du banc de géométrie, à 20° de braquage de la roue extérieure. Une différence anormale révèle un levier de direction ou une biellette tordus, souvent après un choc contre un trottoir.</div>
+<p>Le <strong>diamètre de braquage</strong> (entre trottoirs ou entre murs) dépend surtout de l'empattement et de l'angle de braquage maximum : environ 10 m pour une citadine, 11 à 12 m pour une familiale.</p>`,
+    keys: ['Démultiplication ≈ angle volant ÷ angle roues (souvent 14 à 18) ; 2,5 à 3 tours de butée à butée', 'Direction réversible grâce à la chasse et à l\'inclinaison du pivot', 'Crémaillère (voitures) ; vis et billes recirculantes (lourds)', 'Hydraulique : valve rotative + vérin double effet ; électrique : capteur de couple + moteur', 'Jeantaud : la roue intérieure braque plus, les axes concourent au centre du virage'] }
+]);
+
+insLessons('liaisons', 'geometrie', [
+  { id: 'geometrie-plus', title: 'Pivot, déport et lecture d\'un rapport de géométrie', min: 10, deep: true,
+    goals: ['Comprendre l\'inclinaison du pivot et l\'angle inclus', 'Comprendre le déport au sol positif et négatif', 'Lire un rapport de géométrie', 'Relier les angles aux symptômes'],
+    body: `
+<h3>L'inclinaison du pivot</h3>
+<p>Le pivot est l'axe autour duquel la roue tourne quand on braque (sur un McPherson, la ligne entre le haut de l'amortisseur et la rotule inférieure). Vu de face, il est incliné vers l'intérieur de la voiture : c'est l'<strong>inclinaison du pivot</strong> (souvent 10 à 15°).</p>
+<p>Ses effets :</p>
+<ul>
+<li>quand on braque, la roue décrit un cône et tend à <strong>soulever légèrement l'avant</strong> de la voiture. Le poids de la voiture ramène donc les roues en ligne droite : c'est un effet de <strong>rappel</strong>, qui s'ajoute à celui de la chasse ;</li>
+<li>elle rapproche le point de contact du pneu de l'axe du pivot, ce qui réduit l'effort de braquage et les réactions dans le volant.</li>
+</ul>
+<p>L'<strong>angle inclus</strong> est la somme de l'inclinaison du pivot et du carrossage. Il ne dépend que de la forme du pivot (la fusée) : on ne peut pas le régler. Si le carrossage est faux mais l'angle inclus correct, c'est la caisse ou un bras qui est déformé ; si l'angle inclus est faux, c'est le pivot qui est tordu.</p>
+<h3>Le déport au sol</h3>
+<p>Prolonge l'axe du pivot jusqu'au sol, et compare avec le centre de la surface de contact du pneu : la distance entre les deux est le <strong>déport au sol</strong> (ou déport de pivot).</p>
+<table class="tbl"><thead><tr><th>Déport</th><th>Position</th><th>Effet</th></tr></thead><tbody>
+<tr><td>Positif</td><td>Le pivot touche le sol à l'intérieur du centre du pneu</td><td>Au freinage, la roue tend à s'ouvrir vers l'extérieur. Si une roue freine plus que l'autre, la voiture tire de son côté</td></tr>
+<tr><td>Nul</td><td>Le pivot touche le sol au centre du pneu</td><td>Direction neutre mais braquage à l'arrêt plus dur (le pneu tourne sur place)</td></tr>
+<tr><td>Négatif</td><td>Le pivot touche le sol à l'extérieur du centre du pneu</td><td>Au freinage, la roue tend à se fermer et compense un déséquilibre : la voiture reste stable même si un circuit est en panne ou une roue sur une plaque de glace. C'est pourquoi il est associé au circuit de freinage en X</td></tr>
+</tbody></table>
+<div class="note warn">Monter des jantes avec un déport (ET) différent de l'origine ou des élargisseurs de voie modifie le déport au sol : la direction devient plus lourde, plus sensible aux ornières, et la stabilité au freinage peut être dégradée. C'est une des raisons pour lesquelles les dimensions de jantes sont homologuées.</div>
+<h3>Lire un rapport de géométrie</h3>
+<p>Après un réglage, le centre fournit un rapport avec, pour chaque roue, les valeurs « avant » et « après », et la plage constructeur (souvent en vert si dans les tolérances, en rouge sinon) :</p>
+<ul>
+<li><strong>parallélisme</strong> individuel et total (en degrés ou en mm, + = pincement, − = ouverture) ;</li>
+<li><strong>carrossage</strong> (− = haut de la roue vers l'intérieur) ;</li>
+<li><strong>chasse</strong> et <strong>inclinaison du pivot</strong> (mesurées en braquant) ;</li>
+<li><strong>angle de poussée</strong> (thrust angle) : la direction dans laquelle « pousse » l'essieu arrière par rapport à l'axe de la voiture. S'il n'est pas nul, la voiture roule légèrement en crabe et le volant est de travers en ligne droite.</li>
+</ul>
+<div class="note ex">Volant décalé en ligne droite sans que la voiture tire : souvent un parallélisme réglé sans centrer le volant, ou un angle de poussée arrière non nul. Usure des épaules extérieures des deux pneus avant : pincement excessif (ou pression insuffisante). Usure d'un seul bord intérieur : carrossage trop négatif sur cette roue, à vérifier avec l'angle inclus pour savoir quelle pièce est tordue.</div>`,
+    keys: ['Inclinaison du pivot : rappel des roues en ligne droite, moins d\'effort', 'Angle inclus = inclinaison du pivot + carrossage, non réglable : révèle un pivot tordu', 'Déport au sol négatif : stabilité au freinage, associé au circuit en X', 'Angle de poussée arrière non nul : voiture en crabe, volant de travers'] }
+]);
+addQuiz('liaisons', [
+  { q: 'Un ressort s\'écrase de 40 mm sous 2 000 N. Sa raideur ?', a: ['50 N/mm', '80 N/mm', '20 N/mm', '2 040 N/mm'], c: 0, e: 'K = 2 000 ÷ 40.' },
+  { q: 'La barre antiroulis travaille quand…', a: ['Les deux roues montent ensemble', 'Les roues d\'un essieu se déplacent différemment (virage)', 'On freine', 'La voiture est à l\'arrêt'], c: 1, e: 'C\'est une barre de torsion entre les deux roues.' },
+  { q: 'Le train arrière le plus courant sur une traction compacte est…', a: ['Multibras', 'L\'essieu semi-rigide à traverse déformable', 'Le double triangle', 'L\'essieu rigide à lames'], c: 1, e: 'Simple, compact et peu coûteux.' },
+  { q: 'Volant : 540° pour 30° de braquage. Rapport de direction ?', a: ['12', '18', '30', '16'], c: 1, e: '540 ÷ 30 = 18.' },
+  { q: 'L\'assistance électrique utilise…', a: ['Une pompe entraînée par le moteur', 'Un capteur de couple et un moteur électrique', 'Un vérin pneumatique', 'Le servofrein'], c: 1, e: 'Elle ne consomme presque rien en ligne droite.' },
+  { q: 'Selon l\'épure de Jeantaud, en virage…', a: ['Les deux roues braquent pareil', 'La roue intérieure braque plus', 'La roue extérieure braque plus', 'Seule une roue braque'], c: 1, e: 'Elle décrit un cercle plus petit.' },
+  { q: 'L\'angle inclus est…', a: ['Chasse + carrossage', 'Inclinaison du pivot + carrossage', 'Parallélisme × 2', 'Réglable sur toutes les voitures'], c: 1, e: 'Non réglable, il révèle un pivot tordu.' },
+  { q: 'Un déport au sol négatif…', a: ['Rend la voiture instable au freinage', 'Stabilise la voiture si une roue freine moins', 'Rend la direction impossible', 'Use les pneus au centre'], c: 1, e: 'La roue qui freine le plus tend à se fermer et compense.' }
+]);
+addCards('liaisons', [
+  ['Raideur d\'un ressort', 'K = F ÷ x (N/mm).'],
+  ['Ressort progressif', 'Raideur qui augmente avec l\'écrasement.'],
+  ['Essieu semi-rigide', 'Deux bras reliés par une traverse qui se tord.'],
+  ['Multibras', 'Train à 3–5 bras séparés.'],
+  ['Amortisseur magnétorhéologique', 'Fluide dont la viscosité varie avec un champ magnétique.'],
+  ['Démultiplication de direction', 'Angle volant ÷ angle des roues (≈ 14 à 18).'],
+  ['Direction réversible', 'Les roues ramènent le volant en ligne droite.'],
+  ['Valve rotative', 'Distributeur d\'huile de la direction assistée hydraulique.'],
+  ['Épure de Jeantaud', 'La roue intérieure braque plus : axes concourants au centre du virage.'],
+  ['Inclinaison du pivot', 'Axe de pivot incliné vers l\'intérieur, vu de face (10–15°).'],
+  ['Angle inclus', 'Inclinaison du pivot + carrossage.'],
+  ['Déport au sol', 'Distance au sol entre l\'axe du pivot et le centre du pneu.'],
+  ['Angle de poussée', 'Direction de l\'essieu arrière par rapport à l\'axe de la voiture.']
+]);
+
+/* ===== ENTRETIEN : l'atelier et le client ===== */
+insLessons('entretien', 'ct', [
+  { id: 'garage', title: 'Ordre de réparation, devis et facture', min: 11, deep: true,
+    goals: ['Comprendre le rôle de l\'ordre de réparation', 'Connaître la valeur d\'un devis', 'Connaître les mentions et le seuil d\'une facture', 'Calculer HT, TVA et TTC, remises et escomptes'],
+    body: `
+<h3>Le circuit d'une réparation</h3>
+<ol class="steps">
+<li><strong>Accueil</strong> : on écoute le client, on note ses observations, le kilométrage, l'état du véhicule (rayures, objets laissés).</li>
+<li><strong>Devis</strong> (si le client le demande ou si le montant est important).</li>
+<li><strong>Ordre de réparation</strong> signé.</li>
+<li><strong>Intervention</strong>, puis contrôle et essai.</li>
+<li><strong>Facture</strong> et restitution du véhicule, avec explications.</li>
+</ol>
+<h3>L'ordre de réparation (OR)</h3>
+<p>C'est le document qui formalise ce que le client demande au garage : l'identification du client et du véhicule (immatriculation, kilométrage), la description des travaux demandés, le délai, le prix estimé si connu, la date et la signature. Il est établi en deux exemplaires, un pour chacun.</p>
+<p>Il n'est pas obligatoire, mais il protège les deux parties : en cas de litige, <strong>c'est au garagiste de prouver</strong> que le client a bien commandé les travaux. Sans OR signé, le client peut contester avoir demandé une réparation. Si des travaux supplémentaires apparaissent nécessaires pendant l'intervention, il faut l'<strong>accord du client</strong> avant de les faire (idéalement par écrit, avec un avenant à l'OR).</p>
+<h3>Le devis</h3>
+<ul>
+<li>Il détaille les pièces (référence, quantité, prix unitaire) et la main-d'œuvre (temps et taux horaire), avec les totaux HT, TVA et TTC, et sa durée de validité.</li>
+<li>Une fois <strong>signé par le client</strong> (avec la mention « bon pour accord »), il devient un <strong>contrat</strong> : le prix est un engagement. Le garage ne peut pas facturer davantage sans un nouvel accord, sauf petite erreur matérielle de faible importance.</li>
+<li>Il peut être payant, à condition d'en informer le client à l'avance ; le montant est souvent déduit si les travaux sont faits.</li>
+</ul>
+<h3>Les obligations du garagiste</h3>
+<ul>
+<li><strong>Obligation de résultat</strong> : le garagiste doit réparer la panne pour laquelle il a été payé. Si elle réapparaît, il est présumé responsable, à lui de prouver le contraire.</li>
+<li><strong>Obligation de conseil</strong> : il doit informer le client des défauts qu'il constate, notamment ceux qui touchent la sécurité, et déconseiller une réparation inutile ou disproportionnée.</li>
+<li>Les <strong>pièces remplacées appartiennent au client</strong> : il peut demander à les récupérer (sauf pièces en échange standard ou sous garantie).</li>
+<li>Les prix (taux horaire, forfaits) doivent être <strong>affichés</strong> à l'accueil.</li>
+<li>Les pièces de réemploi (d'occasion) doivent être proposées pour certaines réparations.</li>
+</ul>
+<h3>La facture</h3>
+<p>Une facture (ou note) est <strong>obligatoire pour toute prestation de plus de 25 € TTC</strong>, et délivrée sur demande en dessous. Elle mentionne notamment : la date, le nom et l'adresse du garage et du client, le numéro de facture, le détail des pièces et de la main-d'œuvre, le prix unitaire et la quantité, les totaux HT, le taux et le montant de TVA, le total TTC, et les conditions de paiement.</p>
+<p>Le client a intérêt à conserver ses factures : elles prouvent l'entretien (garantie constructeur, revente) et servent en cas de litige.</p>
+<h3>Le calcul de la facture</h3>
+<p>Trois réductions différentes, appliquées dans cet ordre :</p>
+<dl class="defs">
+<dt>Rabais</dt><dd>Réduction accordée pour un défaut de qualité ou un retard.</dd>
+<dt>Remise</dt><dd>Réduction commerciale accordée à un client régulier ou pour une quantité importante (fréquente sur les pièces).</dd>
+<dt>Escompte</dt><dd>Réduction financière pour un paiement anticipé ou comptant.</dd>
+</dl>
+<div class="note ex">Pièces : 350 € HT avec 10 % de remise → 315 €. Main-d'œuvre : 2,5 h à 70 €/h = 175 €. Total HT : 315 + 175 = 490 €. TVA 20 % : 490 × 0,20 = 98 €. Total TTC : 490 + 98 = <strong>588 €</strong> (ou directement 490 × 1,2). Dans l'autre sens, un prix TTC de 600 € correspond à 600 ÷ 1,2 = 500 € HT.</div>
+<div class="note warn">Erreur classique : pour retrouver le HT à partir du TTC, on ne retire pas 20 % du TTC (600 − 120 = 480 €, faux) : on divise par 1,2 (500 €). La TVA de 20 % s'applique au HT, pas au TTC.</div>`,
+    keys: ['OR signé en 2 exemplaires : la preuve de la commande incombe au garage', 'Devis signé = contrat, prix engagé', 'Obligation de résultat et de conseil ; les pièces remplacées appartiennent au client', 'Facture obligatoire au-delà de 25 € TTC', 'TTC = HT × 1,2 ; HT = TTC ÷ 1,2 ; rabais, remise, escompte'] }
+]);
+addQuiz('entretien', [
+  { q: 'En cas de litige sans OR signé, qui doit prouver que les travaux ont été commandés ?', a: ['Le client', 'Le garagiste', 'L\'assureur', 'Personne'], c: 1, e: 'D\'où l\'intérêt de faire signer un OR.' },
+  { q: 'Un devis signé par le client…', a: ['N\'a aucune valeur', 'Devient un contrat qui engage le prix', 'Peut être dépassé librement', 'Est toujours gratuit'], c: 1, e: 'Le garage ne peut pas facturer plus sans nouvel accord.' },
+  { q: 'Une facture est obligatoire au-delà de…', a: ['10 € TTC', '25 € TTC', '100 € TTC', '1 000 € TTC'], c: 1, e: 'En dessous, elle est remise sur demande.' },
+  { q: 'Total HT 400 €, TVA 20 %. Total TTC ?', a: ['420 €', '480 €', '500 €', '320 €'], c: 1, e: '400 × 1,2.' },
+  { q: 'Une facture fait 720 € TTC. Montant HT ?', a: ['576 €', '600 €', '700 €', '864 €'], c: 1, e: '720 ÷ 1,2 = 600 €.' },
+  { q: 'L\'escompte est accordé pour…', a: ['Un défaut de qualité', 'Un paiement anticipé ou comptant', 'Un client fidèle', 'Une grosse quantité'], c: 1, e: 'Rabais = défaut ; remise = commerciale.' }
+]);
+addCards('entretien', [
+  ['Ordre de réparation', 'Document signé décrivant les travaux commandés.'],
+  ['Devis signé', 'Contrat : le prix est engagé.'],
+  ['Seuil de facture obligatoire', 'Prestation de plus de 25 € TTC.'],
+  ['Obligation de résultat', 'Le garagiste doit réparer la panne facturée.'],
+  ['Rabais / remise / escompte', 'Défaut / commercial / paiement anticipé.'],
+  ['HT → TTC (TVA 20 %)', '× 1,2.'],
+  ['TTC → HT (TVA 20 %)', '÷ 1,2.']
+]);
+
+/* ===== BASES : unités ===== */
+insLessons('bases', 'cartegrise', [
+  { id: 'unites', title: 'Unités, conversions et ordres de grandeur', min: 12, deep: true,
+    goals: ['Connaître les unités du système international utilisées en mécanique', 'Convertir les unités courantes (bar, psi, ch, kW, N·m)', 'Utiliser les préfixes (milli, kilo, méga)', 'Lire les symboles d\'un schéma cinématique'],
+    body: `
+<h3>Le système international (SI)</h3>
+<table class="tbl"><thead><tr><th>Grandeur</th><th>Unité SI</th><th>Autres unités courantes</th></tr></thead><tbody>
+<tr><td>Longueur</td><td>mètre (m)</td><td>mm, pouce (1" = 25,4 mm)</td></tr>
+<tr><td>Masse</td><td>kilogramme (kg)</td><td>g, tonne</td></tr>
+<tr><td>Temps</td><td>seconde (s)</td><td>min, h</td></tr>
+<tr><td>Force</td><td>newton (N)</td><td>daN (décanewton = 10 N ≈ le poids de 1 kg)</td></tr>
+<tr><td>Couple (moment)</td><td>newton-mètre (N·m)</td><td>daN·m (= 10 N·m), m·kg (ancienne)</td></tr>
+<tr><td>Pression</td><td>pascal (Pa)</td><td>bar (1 bar = 100 000 Pa = 100 kPa), psi</td></tr>
+<tr><td>Énergie, travail</td><td>joule (J)</td><td>kWh (1 kWh = 3,6 millions de J), calorie</td></tr>
+<tr><td>Puissance</td><td>watt (W)</td><td>kW, ch</td></tr>
+<tr><td>Vitesse de rotation</td><td>radian par seconde (rad/s)</td><td>tours par minute (tr/min)</td></tr>
+<tr><td>Température</td><td>kelvin (K)</td><td>degré Celsius (°C) : K = °C + 273</td></tr>
+<tr><td>Courant, tension, résistance</td><td>ampère (A), volt (V), ohm (Ω)</td><td>mA, kV, kΩ</td></tr>
+<tr><td>Capacité électrique d'une batterie</td><td>coulomb (C)</td><td>ampère-heure (Ah)</td></tr>
+</tbody></table>
+<h3>Les préfixes</h3>
+<table class="tbl"><thead><tr><th>Préfixe</th><th>Symbole</th><th>Valeur</th><th>Exemple</th></tr></thead><tbody>
+<tr><td>méga</td><td>M</td><td>× 1 000 000</td><td>1 MPa = 10 bars</td></tr>
+<tr><td>kilo</td><td>k</td><td>× 1 000</td><td>1 kW = 1 000 W</td></tr>
+<tr><td>déca</td><td>da</td><td>× 10</td><td>1 daN = 10 N</td></tr>
+<tr><td>milli</td><td>m</td><td>÷ 1 000</td><td>500 mA = 0,5 A</td></tr>
+<tr><td>micro</td><td>µ</td><td>÷ 1 000 000</td><td>Jeu de 50 µm = 0,05 mm</td></tr>
+</tbody></table>
+<h3>Les conversions à connaître</h3>
+<ul>
+<li><strong>Puissance</strong> : 1 ch ≈ 0,736 kW ; 1 kW ≈ 1,36 ch. (Le « hp » anglo-saxon vaut 0,746 kW, presque pareil.)</li>
+<li><strong>Pression</strong> : 1 bar ≈ 14,5 psi ; 2,2 bars ≈ 32 psi (pression de pneu courante sur les compresseurs américains).</li>
+<li><strong>Couple</strong> : 1 daN·m = 10 N·m ; 1 m·kg ≈ 9,81 N·m ; 1 lb·ft ≈ 1,36 N·m.</li>
+<li><strong>Vitesse</strong> : 1 m/s = 3,6 km/h. Pour passer de km/h en m/s, on divise par 3,6 (90 km/h = 25 m/s).</li>
+<li><strong>Vitesse de rotation</strong> : ω (rad/s) = régime (tr/min) × 2π ÷ 60 ; 3 000 tr/min ≈ 314 rad/s.</li>
+<li><strong>Volume</strong> : 1 L = 1 dm³ = 1 000 cm³.</li>
+</ul>
+<div class="note ex">Une fiche indique « 150 hp et 184 lb·ft » (voiture américaine). Conversion : 150 × 0,746 ≈ 112 kW (≈ 152 ch) et 184 × 1,36 ≈ 250 N·m. Un couple de serrage de roue de « 11 m·kg » dans une vieille revue technique vaut environ 108 N·m : on règle la clé dynamométrique sur 110.</div>
+<div class="note why">Pourquoi maîtriser les unités ? Parce qu'une erreur d'unité sur un couple de serrage peut casser une vis (N·m au lieu de daN·m : 10 fois trop) ou la laisser se desserrer. Et parce que toutes les formules (puissance = couple × ω, pression = force ÷ surface) ne marchent qu'avec des unités cohérentes : N, m, s, Pa, W.</div>
+<h3>La masse et le poids</h3>
+<p>La <strong>masse</strong> (en kg) est la quantité de matière ; le <strong>poids</strong> est la force exercée par la pesanteur sur cette masse : P = m × g, avec g ≈ 9,81 m/s² (on arrondit souvent à 10). Une voiture de 1 200 kg pèse environ 11 800 N, soit environ 1 180 daN. C'est pourquoi le daN est si pratique : il vaut à peu près le poids d'un kilogramme.</p>
+<h3>Les symboles d'un schéma cinématique</h3>
+<p>Pour représenter un mécanisme sans dessiner toutes les pièces, les techniciens utilisent des symboles normalisés de <strong>liaisons</strong> :</p>
+<table class="tbl"><thead><tr><th>Liaison</th><th>Mouvement autorisé</th><th>Exemple</th></tr></thead><tbody>
+<tr><td>Encastrement (liaison fixe)</td><td>Aucun</td><td>Culasse boulonnée sur le bloc</td></tr>
+<tr><td>Pivot</td><td>Une rotation autour d'un axe</td><td>Vilebrequin dans ses paliers</td></tr>
+<tr><td>Glissière</td><td>Une translation</td><td>Crémaillère de direction dans son carter</td></tr>
+<tr><td>Pivot glissant</td><td>Rotation + translation sur le même axe</td><td>Piston dans le cylindre, baladeur sur ses cannelures (avec translation seule)</td></tr>
+<tr><td>Rotule</td><td>Trois rotations autour d'un point</td><td>Rotule de direction, rotule de triangle</td></tr>
+<tr><td>Hélicoïdale</td><td>Rotation et translation liées</td><td>Vis et écrou, vis de réglage</td></tr>
+</tbody></table>`,
+    keys: ['Force en N (daN ≈ poids de 1 kg), couple en N·m, pression en Pa (1 bar = 100 kPa)', 'Préfixes : M, k, da, m, µ', '1 ch ≈ 0,736 kW ; 1 bar ≈ 14,5 psi ; 1 daN·m = 10 N·m ; km/h ÷ 3,6 = m/s', 'Poids = masse × 9,81', 'Liaisons : encastrement, pivot, glissière, pivot glissant, rotule, hélicoïdale'] }
+]);
+addQuiz('bases', [
+  { q: '1 bar vaut…', a: ['1 000 Pa', '100 000 Pa', '10 Pa', '14,5 Pa'], c: 1, e: '1 bar = 100 kPa.' },
+  { q: '100 kW correspondent à environ…', a: ['74 ch', '100 ch', '136 ch', '173 ch'], c: 2, e: '1 kW ≈ 1,36 ch.' },
+  { q: 'Un couple de 9 daN·m vaut…', a: ['0,9 N·m', '90 N·m', '900 N·m', '9 N·m'], c: 1, e: '1 daN·m = 10 N·m.' },
+  { q: '108 km/h en m/s ?', a: ['30 m/s', '389 m/s', '18 m/s', '10,8 m/s'], c: 0, e: '108 ÷ 3,6 = 30.' },
+  { q: 'Le poids d\'une voiture de 1 000 kg est d\'environ…', a: ['1 000 N', '9 810 N', '100 N', '98 100 N'], c: 1, e: 'P = m × g ≈ 1 000 × 9,81.' },
+  { q: 'La liaison entre le vilebrequin et ses paliers est…', a: ['Une glissière', 'Un pivot', 'Une rotule', 'Un encastrement'], c: 1, e: 'Une seule rotation autour de l\'axe.' }
+]);
+addCards('bases', [
+  ['Newton (N)', 'Unité de force ; 1 daN ≈ poids de 1 kg.'],
+  ['1 bar', '100 000 Pa ≈ 14,5 psi.'],
+  ['ch ↔ kW', '1 ch ≈ 0,736 kW ; 1 kW ≈ 1,36 ch.'],
+  ['daN·m ↔ N·m', '1 daN·m = 10 N·m.'],
+  ['km/h ↔ m/s', '÷ 3,6 ou × 3,6.'],
+  ['Préfixe µ', 'Micro : ÷ 1 000 000 (50 µm = 0,05 mm).'],
+  ['Poids', 'P = m × g (g ≈ 9,81 m/s²).'],
+  ['Liaison pivot', 'Une seule rotation autorisée.'],
+  ['Liaison rotule', 'Trois rotations autour d\'un point.']
+]);
+
+/* ===== ÉLECTRIQUE ET HYBRIDE : compléments ===== */
+insLessons('electrique', 'familles', [
+  { id: 'moteur-electrique', title: 'Moteur électrique, onduleur et recharge', min: 14, deep: true,
+    goals: ['Comprendre le principe du moteur synchrone à champ tournant', 'Comprendre le rôle de l\'onduleur et du hachage', 'Connaître les modes de recharge et leurs puissances', 'Comprendre la pile à combustible'],
+    body: `
+<h3>Le champ tournant</h3>
+<p>Le moteur d'une voiture électrique est presque toujours un moteur <strong>à courant alternatif triphasé</strong>. Son <strong>stator</strong> (partie fixe) porte trois groupes de bobines décalés de 120°. Alimentés par trois courants alternatifs eux-mêmes décalés d'un tiers de période, ils créent un <strong>champ magnétique qui tourne</strong> à l'intérieur du stator, comme si un aimant invisible tournait.</p>
+<p>Le <strong>rotor</strong> suit ce champ :</p>
+<ul>
+<li>dans un <strong>moteur synchrone à aimants permanents</strong> (le plus courant : Renault, Stellantis, Tesla, Hyundai…), le rotor porte des aimants qui tournent exactement à la vitesse du champ (« synchrone ») ;</li>
+<li>dans un <strong>moteur synchrone à rotor bobiné</strong> (Renault Zoé, Mégane E-Tech, BMW), le rotor est un électroaimant alimenté par des balais : pas de terres rares, et on peut régler son magnétisme ;</li>
+<li>dans un <strong>moteur asynchrone</strong> (à induction), le rotor est une « cage » en cuivre ou aluminium : le champ y induit des courants, et il tourne un peu moins vite que le champ (il « glisse »). Robuste, sans aimant, il ne crée pas de frein quand il n'est pas alimenté.</li>
+</ul>
+<p>Pour faire varier la vitesse, il suffit de changer la <strong>fréquence</strong> des courants : à 200 Hz, le champ fait 200 tours par seconde (pour un moteur à une paire de pôles), soit 12 000 tr/min. Un <strong>résolveur</strong> (capteur de position angulaire) indique en permanence la position exacte du rotor au calculateur.</p>
+<h3>L'onduleur</h3>
+<p>La batterie fournit du courant <strong>continu</strong> ; le moteur a besoin d'<strong>alternatif triphasé</strong>. L'<strong>onduleur</strong> (inverter) fait la conversion avec six interrupteurs électroniques de puissance (transistors IGBT, ou au carbure de silicium SiC sur les modèles récents).</p>
+<p>Le principe est le <strong>hachage</strong> (MLI, modulation de largeur d'impulsion, ou PWM en anglais) : les transistors s'ouvrent et se ferment des milliers de fois par seconde. En faisant varier la durée des impulsions (le <strong>rapport cyclique</strong>), on reconstitue une tension moyenne qui suit une forme sinusoïdale. C'est le même principe que la commande d'une électrovanne en RCO, mais avec des centaines d'ampères.</p>
+<div class="note ex">Rapport cyclique : un interrupteur fermé 30 % du temps sur une batterie de 400 V donne une tension moyenne de 0,30 × 400 = 120 V. En faisant varier ce rapport de façon sinusoïdale sur chaque phase, l'onduleur fabrique trois tensions alternatives d'amplitude et de fréquence réglables : il pilote ainsi le couple et la vitesse du moteur.</div>
+<p>En freinage ou lever de pied, l'onduleur fonctionne à l'envers : le moteur devient <strong>générateur</strong>, l'onduleur redresse le courant et recharge la batterie (freinage régénératif). Le même boîtier fait souvent aussi convertisseur <strong>DC/DC</strong> : il abaisse la haute tension vers environ 14 V pour recharger la batterie 12 V qui alimente l'électronique de bord.</p>
+<h3>La transmission</h3>
+<p>Un moteur électrique a du couple dès 0 tr/min et tourne jusqu'à 12 000 à 20 000 tr/min : un seul rapport suffit. Un <strong>réducteur</strong> à engrenages (rapport d'environ 8 à 11:1) et un différentiel transmettent le couple aux roues. La marche arrière s'obtient en <strong>inversant le sens de rotation</strong> du champ. La position P bloque mécaniquement le réducteur avec un cliquet.</p>
+<h3>La recharge</h3>
+<table class="tbl"><thead><tr><th>Mode</th><th>Matériel</th><th>Puissance typique</th><th>Durée pour 100 km</th></tr></thead><tbody>
+<tr><td>Prise domestique</td><td>Câble avec boîtier de contrôle (mode 2)</td><td>1,8 à 2,3 kW</td><td>7 à 8 h</td></tr>
+<tr><td>Prise renforcée</td><td>Prise dédiée et ligne protégée</td><td>3,2 à 3,7 kW</td><td>4 à 5 h</td></tr>
+<tr><td>Borne murale (wallbox) AC</td><td>Mode 3, prise Type 2</td><td>7,4 kW (monophasé) à 11 ou 22 kW (triphasé)</td><td>1 à 2,5 h</td></tr>
+<tr><td>Borne rapide DC</td><td>Mode 4, prise CCS Combo</td><td>50 à 350 kW</td><td>Environ 10 à 15 min (selon la voiture)</td></tr>
+</tbody></table>
+<p>En courant alternatif (AC), c'est le <strong>chargeur embarqué</strong> de la voiture qui redresse le courant : sa puissance limite la recharge (une voiture à chargeur 7 kW ne chargera pas plus vite sur une borne 22 kW). En courant continu (DC), la borne alimente directement la batterie : c'est la batterie et son système de gestion (BMS) qui limitent, selon sa température et son état de charge. La puissance chute nettement au-delà d'environ 80 %.</p>
+<div class="note ex">Une batterie de 60 kWh utiles, une consommation de 16 kWh/100 km : autonomie théorique 60 ÷ 16 × 100 ≈ 375 km. Une recharge de 10 à 80 % (42 kWh) sur une wallbox de 7,4 kW prend environ 42 ÷ 7,4 ≈ 5,7 h (un peu plus avec les pertes). Les autonomies réelles des électriques récentes vont de 250 à plus de 600 km ; elles baissent de 20 à 40 % par grand froid (chauffage et chimie de la batterie ralentie), d'où l'intérêt d'une <strong>pompe à chaleur</strong>.</div>
+<h3>La pile à combustible</h3>
+<p>Une voiture à hydrogène (Toyota Mirai, Hyundai Nexo) est une voiture électrique dont l'électricité est produite à bord par une <strong>pile à combustible</strong>. Dans chaque cellule, une membrane (PEM) sépare l'hydrogène, côté anode, de l'oxygène de l'air, côté cathode. L'hydrogène se scinde en protons, qui traversent la membrane, et en électrons, qui sont obligés de passer par le circuit extérieur : c'est le courant électrique. De l'autre côté, protons, électrons et oxygène se recombinent en <strong>eau</strong>, seul rejet. Une petite batterie tampon stocke l'énergie du freinage et aide aux accélérations. L'hydrogène est stocké dans des réservoirs en fibre de carbone à 700 bars : le plein prend 3 à 5 minutes.</p>`,
+    keys: ['Stator triphasé (120°) = champ tournant ; rotor à aimants (synchrone), bobiné, ou à cage (asynchrone)', 'Vitesse réglée par la fréquence ; résolveur pour la position du rotor', 'Onduleur : continu → alternatif par hachage (MLI, rapport cyclique) ; réversible pour la régénération ; DC/DC vers 14 V', 'Un seul rapport de réduction ; marche arrière par inversion du champ', 'AC limité par le chargeur embarqué ; DC limité par la batterie, ralenti après 80 %', 'Pile à combustible : H₂ + O₂ → électricité + eau'] }
+]);
+
+insLessons('electrique', 'moteur-electrique', [
+  { id: 'hybrides', title: 'Les architectures hybrides', min: 12, deep: true,
+    goals: ['Distinguer micro-, mild-, full et plug-in hybrides', 'Comprendre les architectures série, parallèle et série-parallèle', 'Comprendre le Stop & Start', 'Calculer l\'énergie d\'une batterie'],
+    body: `
+<h3>Les niveaux d'hybridation</h3>
+<table class="tbl"><thead><tr><th>Type</th><th>Tension et puissance électrique</th><th>Ce qu'il sait faire</th></tr></thead><tbody>
+<tr><td>Micro-hybride</td><td>12 V, quelques kW</td><td>Stop & Start renforcé, récupération légère au freinage. Ne roule jamais en électrique</td></tr>
+<tr><td>Hybride léger (mild, MHEV)</td><td>48 V le plus souvent, 10 à 20 kW</td><td>Alterno-démarreur qui aide le moteur thermique aux reprises, coupe le moteur en roue libre, Stop & Start très doux. Peu ou pas de roulage électrique</td></tr>
+<tr><td>Hybride complet (full, HEV)</td><td>Plus de 100 V, souvent 200 à 300 V</td><td>Roule en électrique à basse vitesse sur quelques kilomètres, se recharge seul (freinage et moteur thermique). Toyota, Renault E-Tech, Honda</td></tr>
+<tr><td>Hybride rechargeable (PHEV)</td><td>300 à 400 V, batterie de 10 à 25 kWh</td><td>Se recharge sur une prise, 40 à 100 km en électrique, puis fonctionne en hybride</td></tr>
+</tbody></table>
+<h3>Les architectures</h3>
+<dl class="defs">
+<dt>Hybride série</dt><dd>Le moteur thermique n'entraîne jamais les roues : il fait tourner un générateur qui produit l'électricité, et seul le moteur électrique entraîne les roues. Le thermique peut tourner à son régime idéal. Exemples : Nissan e-Power, prolongateurs d'autonomie.</dd>
+<dt>Hybride parallèle</dt><dd>Les deux moteurs peuvent entraîner les roues, ensemble ou séparément, par la même transmission (souvent la boîte de vitesses). Le moteur électrique est souvent placé entre le moteur et la boîte. La plupart des PHEV européens.</dd>
+<dt>Hybride série-parallèle (à dérivation de puissance)</dt><dd>Un <strong>train épicycloïdal</strong> répartit la puissance du moteur thermique : une partie va aux roues mécaniquement, une partie va à un générateur, qui alimente le moteur électrique ou la batterie. En faisant varier la vitesse du générateur, on obtient une variation continue du rapport (pas de boîte de vitesses classique). C'est le système Toyota.</dd>
+</dl>
+<p>Renault E-Tech utilise une approche différente : une boîte à crabots sans embrayage, avec deux moteurs électriques qui synchronisent les rapports et assurent le démarrage.</p>
+<h3>Le Stop & Start</h3>
+<p>Le moteur se coupe à l'arrêt (feu rouge, bouchon) et redémarre dès qu'on relâche le frein ou qu'on appuie sur l'embrayage. Il demande des composants renforcés :</p>
+<ul>
+<li>un <strong>démarreur renforcé</strong> (des centaines de milliers de démarrages) ou un <strong>alterno-démarreur</strong> entraîné par la courroie, plus silencieux ;</li>
+<li>une <strong>batterie AGM ou EFB</strong>, conçue pour les cycles répétés de décharge ;</li>
+<li>un <strong>capteur de batterie</strong> sur la borne − (il mesure courant, tension et température pour connaître l'état de charge) ;</li>
+<li>un dispositif de <strong>maintien de tension</strong> qui garde l'électronique au-dessus d'environ 12 V pendant le redémarrage (sinon la radio ou l'écran redémarreraient).</li>
+</ul>
+<p>Le système ne coupe pas le moteur si la batterie est faible, si le moteur est froid, si la clim est très sollicitée, ou si la porte conducteur est ouverte.</p>
+<div class="note warn">On remplace une batterie AGM ou EFB par le même type, et on déclare souvent le remplacement au calculateur avec l'outil de diagnostic (pour que la gestion de charge reparte de zéro). Une batterie classique montée à la place s'use en quelques mois, et le Stop & Start cesse de fonctionner.</div>
+<h3>L'énergie d'une batterie</h3>
+<p>L'<strong>énergie</strong> stockée dans une batterie se calcule en multipliant sa capacité par sa tension :</p>
+<p class="formula">Énergie (Wh) = capacité (Ah) × tension (V)</p>
+<div class="note ex">Une batterie 12 V de 70 Ah stocke 70 × 12 = 840 Wh, soit 0,84 kWh. Une batterie de voiture électrique de 400 V et 150 Ah stocke 400 × 150 = 60 000 Wh = <strong>60 kWh</strong>, plus de 70 fois plus. Une batterie de full hybride fait souvent 1 à 1,5 kWh : elle sert de tampon, pas de réservoir.</div>`,
+    keys: ['Micro (12 V), mild (48 V), full (> 100 V, roule en électrique), PHEV (rechargeable)', 'Série : le thermique ne fait que produire l\'électricité ; parallèle : les deux entraînent les roues ; série-parallèle : train épicycloïdal (Toyota)', 'Stop & Start : démarreur renforcé, batterie AGM/EFB, capteur de batterie, maintien de tension', 'Énergie (Wh) = Ah × V'] }
+]);
+addQuiz('electrique', [
+  { q: 'Le champ tournant d\'un moteur électrique est créé par…', a: ['Le rotor', 'Trois bobines du stator alimentées en triphasé', 'La batterie 12 V', 'Le réducteur'], c: 1, e: 'Les courants décalés de 120° font tourner le champ.' },
+  { q: 'Dans un moteur asynchrone, le rotor tourne…', a: ['Exactement à la vitesse du champ', 'Un peu moins vite que le champ', 'Plus vite que le champ', 'À l\'envers'], c: 1, e: 'Ce « glissement » est nécessaire pour induire du courant.' },
+  { q: 'Le rôle de l\'onduleur est de…', a: ['Charger la batterie 12 V seulement', 'Transformer le continu de la batterie en alternatif pour le moteur', 'Refroidir la batterie', 'Changer de rapport'], c: 1, e: 'Par hachage (MLI).' },
+  { q: 'Rapport cyclique de 25 % sur 400 V : tension moyenne ?', a: ['25 V', '100 V', '300 V', '400 V'], c: 1, e: '0,25 × 400.' },
+  { q: 'En recharge AC, qu\'est-ce qui limite souvent la puissance ?', a: ['Le câble seul', 'Le chargeur embarqué de la voiture', 'Les pneus', 'La pompe à chaleur'], c: 1, e: 'Une voiture à chargeur 7 kW ne charge pas plus vite sur 22 kW.' },
+  { q: 'Une pile à combustible rejette…', a: ['Du CO₂', 'De l\'eau', 'Des NOx', 'Rien du tout'], c: 1, e: 'H₂ + O₂ → électricité + eau.' },
+  { q: 'Dans un hybride série, le moteur thermique…', a: ['Entraîne les roues', 'Ne fait que produire de l\'électricité', 'N\'existe pas', 'Recharge par une prise'], c: 1, e: 'Seul le moteur électrique entraîne les roues.' },
+  { q: 'Le système Toyota répartit la puissance grâce à…', a: ['Une boîte 6 vitesses', 'Un train épicycloïdal', 'Deux embrayages', 'Une courroie'], c: 1, e: 'C\'est un hybride série-parallèle.' },
+  { q: 'Batterie 48 V de 10 Ah. Énergie ?', a: ['58 Wh', '480 Wh', '4,8 kWh', '38 Wh'], c: 1, e: '48 × 10 = 480 Wh.' },
+  { q: 'Pour remplacer une batterie AGM de Stop & Start, on monte…', a: ['N\'importe quelle batterie 12 V', 'Une batterie AGM, déclarée au calculateur', 'Une batterie lithium', 'Deux batteries classiques'], c: 1, e: 'Une batterie classique s\'use vite et désactive le Stop & Start.' }
+]);
+addCards('electrique', [
+  ['Champ tournant', 'Créé par trois bobines du stator alimentées en triphasé décalé de 120°.'],
+  ['Moteur synchrone', 'Le rotor tourne exactement à la vitesse du champ (aimants ou rotor bobiné).'],
+  ['Moteur asynchrone', 'Rotor à cage qui « glisse » derrière le champ.'],
+  ['Résolveur', 'Capteur de position angulaire du rotor.'],
+  ['Onduleur', 'Convertit le continu de la batterie en alternatif triphasé (MLI).'],
+  ['MLI / PWM', 'Modulation de largeur d\'impulsion : tension moyenne réglée par le rapport cyclique.'],
+  ['Convertisseur DC/DC', 'Abaisse la haute tension vers ≈ 14 V pour le réseau 12 V.'],
+  ['Prise Type 2 / CCS', 'Recharge AC / recharge rapide DC.'],
+  ['Pile à combustible PEM', 'Hydrogène + oxygène → électricité + eau.'],
+  ['Mild hybrid', 'Hybride léger 48 V, alterno-démarreur.'],
+  ['Hybride série-parallèle', 'Répartition de puissance par train épicycloïdal.'],
+  ['Batterie EFB / AGM', 'Batteries renforcées pour Stop & Start.'],
+  ['Énergie d\'une batterie', 'Wh = Ah × V.']
+]);
+
+/* ===== GLOSSAIRE : nouveaux termes ===== */
+GLOSSARY.push(
+  ['Angle inclus', 'Somme de l\'inclinaison du pivot et du carrossage ; non réglable.', 'liaisons'],
+  ['Angle de poussée', 'Direction de l\'essieu arrière par rapport à l\'axe longitudinal.', 'liaisons'],
+  ['Arbre secondaire', 'Arbre de sortie d\'une boîte, portant les pignons fous.', 'transmission'],
+  ['Auto-serrage', 'Effet par lequel une mâchoire de tambour est entraînée et freine plus.', 'freinage'],
+  ['Bicarburation', 'Fonctionnement possible avec deux carburants (essence + GPL).', 'alimentation'],
+  ['Canister', 'Boîte à charbon actif qui piège les vapeurs d\'essence.', 'alimentation'],
+  ['Chemise', 'Tube formant le cylindre, sèche ou humide.', 'moteur'],
+  ['Coussinet', 'Demi-bague antifriction entre vilebrequin et bielle ou bloc.', 'moteur'],
+  ['Crabot', 'Denture latérale qui verrouille un pignon à son arbre.', 'transmission'],
+  ['Déphaseur', 'Dispositif qui avance ou retarde l\'arbre à cames en roulant.', 'moteur'],
+  ['Déport au sol', 'Distance au sol entre l\'axe du pivot et le centre du pneu.', 'liaisons'],
+  ['Devis', 'Estimation chiffrée ; signée, elle engage le prix.', 'entretien'],
+  ['Diaphragme', 'Ressort conique fendu du mécanisme d\'embrayage.', 'transmission'],
+  ['E85', 'Superéthanol, 60 à 85 % d\'éthanol, pour véhicules flex-fuel.', 'alimentation'],
+  ['EGR interne', 'Gaz brûlés conservés dans le cylindre par le croisement des soupapes.', 'moteur'],
+  ['Épure de Jeantaud', 'Géométrie qui fait braquer plus la roue intérieure.', 'liaisons'],
+  ['Escompte', 'Réduction pour paiement anticipé.', 'entretien'],
+  ['Fading', 'Perte d\'efficacité du freinage due à l\'échauffement.', 'freinage'],
+  ['GNV', 'Gaz naturel pour véhicules, méthane comprimé.', 'alimentation'],
+  ['GPL', 'Gaz de pétrole liquéfié (butane + propane).', 'alimentation'],
+  ['HVO', 'Huile végétale hydrotraitée, substitut du gazole.', 'alimentation'],
+  ['Hygroscopique', 'Qui absorbe l\'humidité (liquide de frein).', 'freinage'],
+  ['Inclinaison du pivot', 'Angle de l\'axe de pivot vers l\'intérieur, vu de face.', 'liaisons'],
+  ['Lambda (λ)', 'Rapport air réel ÷ air idéal ; λ = 1 mélange parfait.', 'alimentation'],
+  ['Levée variable', 'Course des soupapes réglable en continu.', 'moteur'],
+  ['Ligne d\'arbre', 'Axe commun des paliers du vilebrequin.', 'moteur'],
+  ['Maître-cylindre tandem', 'Maître-cylindre à deux pistons pour deux circuits.', 'freinage'],
+  ['MLI', 'Modulation de largeur d\'impulsion (PWM).', 'electrique'],
+  ['Onduleur', 'Convertisseur continu → alternatif d\'un véhicule électrique.', 'electrique'],
+  ['Ordre de réparation', 'Document signé décrivant les travaux commandés.', 'entretien'],
+  ['Pile à combustible', 'Produit de l\'électricité à partir d\'hydrogène et d\'oxygène.', 'electrique'],
+  ['Piège à NOx', 'Catalyseur qui stocke les NOx et se régénère en mélange riche.', 'alimentation'],
+  ['Pignon fou', 'Pignon libre sur son arbre.', 'transmission'],
+  ['PME', 'Pression moyenne effective, mesure de la charge d\'un moteur.', 'moteur'],
+  ['Pression absolue', 'Pression mesurée à partir du vide ; relative + 1 bar.', 'alimentation'],
+  ['Raideur', 'Force nécessaire pour comprimer un ressort d\'une unité de longueur (N/mm).', 'liaisons'],
+  ['Régule', 'Alliage antifriction des coussinets.', 'moteur'],
+  ['Remise', 'Réduction commerciale.', 'entretien'],
+  ['Résolveur', 'Capteur de position du rotor d\'un moteur électrique.', 'electrique'],
+  ['Richesse', 'Dosage réel ÷ dosage stœchiométrique.', 'alimentation'],
+  ['Servofrein', 'Assistance de freinage par dépression.', 'freinage'],
+  ['Synchroniseur', 'Bague conique qui égalise les vitesses avant passage d\'un rapport.', 'transmission'],
+  ['Valve rotative', 'Distributeur de la direction assistée hydraulique.', 'liaisons'],
+  ['WLTP', 'Cycle européen d\'homologation de consommation et d\'émissions.', 'alimentation']
+);
+
 const DIAGRAMS = {
 carOverview: { title: 'Vue d\'ensemble d\'une voiture', vb: '0 0 600 250', svg: `
 <line class="s-ground" x1="20" y1="236" x2="580" y2="236"/>
@@ -3947,6 +5169,8 @@ parts: {
 }};
 
 
+(function(){const seen=new Set();for(let i=GLOSSARY.length-1;i>=0;i--){const k=GLOSSARY[i][0].toLowerCase();if(seen.has(k))GLOSSARY.splice(i,1);else seen.add(k);}GLOSSARY.sort((a,b)=>a[0].localeCompare(b[0],'fr'));})();
+
 </script>
 <script>
 (function () {
@@ -4300,6 +5524,7 @@ function lesson(mid, lid) {
 ${last && nx ? `<a class="btn ghost block" href="#l--${nx.m.id}--${nx.l.id}">Passer au module suivant sans quiz</a>` : ''}
 ${!last ? `<a class="btn ghost block" href="#q--${m.id}">Aller au quiz du module</a>` : ''}</div>`;
   hydrate(main);
+  markPending();
   $('#fin').onclick = () => { S.done[key] = true; touch(); save(); location.hash = target; };
 }
 
@@ -4393,6 +5618,7 @@ function glossaire() {
   main.innerHTML = `<p class="eyebrow">${GLOSSARY.length} termes</p><h2>Glossaire</h2><div class="field" style="margin:12px 0"><label for="gq">Rechercher</label><input id="gq" class="inp" placeholder="ex. étrier, turbo, VIN" autocomplete="off"></div><div class="gl" id="gll"></div>`;
   const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   const f = () => { const q = norm($('#gq').value.trim()); const r = GLOSSARY.filter(g => !q || norm(g[0] + ' ' + g[1]).includes(q)); $('#gll').innerHTML = r.length ? r.map(g => { const m = MODULES.find(x => x.id === g[2]); return `<div><b>${g[0]}</b><p>${g[1]}</p>${m ? `<a href="#cours--${m.id}">${m.title}</a>` : ''}</div>`; }).join('') : '<div class="muted">Aucun terme trouvé.</div>'; };
+  if (GLOQ) { $('#gq').value = GLOQ; GLOQ = ''; }
   $('#gq').oninput = f; f();
 }
 
@@ -4423,6 +5649,82 @@ function decodeurs() {
   hydrate(main);
 }
 
+
+/* ---------- Recherche ---------- */
+const NORM = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/œ/g, 'oe').replace(/æ/g, 'ae');
+const strip = h => h.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let IDX = null, GLOQ = '', PENDING = '', PENDING_DONE = false, LASTQ = '';
+function buildIdx() {
+  IDX = [];
+  ALL_LESSONS.forEach(({ m, l }) => {
+    IDX.push({ k: 'Leçon', t: l.title, sub: m.title, href: `#l--${m.id}--${l.id}`, title: l.title, txt: strip(l.body) + ' ' + l.keys.join(' ') + ' ' + (l.goals || []).join(' ') });
+  });
+  GLOSSARY.forEach(g => IDX.push({ k: 'Glossaire', t: g[0], sub: (MODULES.find(x => x.id === g[2]) || {}).title || '', href: '#glossaire', title: g[0], txt: g[1] }));
+  SYMPTOMS.forEach(s => IDX.push({ k: 'Symptôme', t: s.s, sub: 'Diagnostic', href: '#diag', title: s.s, txt: s.causes.map(c => c[0] + ' ' + c[1]).join(' ') }));
+  MODULES.forEach(m => m.cards.forEach(c => IDX.push({ k: 'Carte', t: strip(c[0]), sub: m.title, href: `#fc--${m.id}--libre`, title: strip(c[0]), txt: strip(c[1]) })));
+  IDX.forEach(x => { x.nt = NORM(x.title); x.nx = NORM(x.txt); });
+}
+function snippet(txt, terms) {
+  const n = NORM(txt); let pos = -1;
+  for (const t of terms) { const i = n.indexOf(t); if (i >= 0 && (pos < 0 || i < pos)) pos = i; }
+  if (pos < 0) pos = 0;
+  const a = Math.max(0, pos - 60), b = Math.min(txt.length, pos + 140);
+  let s = (a > 0 ? '…' : '') + txt.slice(a, b) + (b < txt.length ? '…' : '');
+  return hl(s, terms);
+}
+function hl(s, terms) {
+  const n = NORM(s); const marks = [];
+  terms.forEach(t => { let i = 0; while ((i = n.indexOf(t, i)) >= 0) { marks.push([i, i + t.length]); i += t.length; } });
+  marks.sort((x, y) => x[0] - y[0]);
+  let out = '', last = 0;
+  marks.forEach(([x, y]) => { if (x < last) return; out += esc(s.slice(last, x)) + '<mark>' + esc(s.slice(x, y)) + '</mark>'; last = y; });
+  return out + esc(s.slice(last));
+}
+function recherche() {
+  chrome('Recherche', '', '');
+  if (!IDX) buildIdx();
+  main.innerHTML = `<p class="eyebrow">Leçons, glossaire, symptômes, cartes</p><h2>Rechercher</h2><div class="sbox"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="sq" type="search" placeholder="ex. synchroniseur, lambda, P0299" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div><div id="sres" class="sres"></div>`;
+  const inp = $('#sq'); inp.value = LASTQ;
+  const run = () => {
+    LASTQ = inp.value; const q = NORM(inp.value.trim());
+    const terms = q.split(/\s+/).filter(t => t.length > 1);
+    if (!terms.length) { $('#sres').innerHTML = `<p class="muted small">Tape au moins 2 lettres. Les accents et majuscules sont ignorés ; plusieurs mots = tous doivent apparaître.</p>`; return; }
+    const r = [];
+    for (const x of IDX) {
+      const all = x.nt + ' ' + x.nx; if (!terms.every(t => all.includes(t))) continue;
+      let sc = 0; terms.forEach(t => { if (x.nt.includes(t)) sc += 10; let i = 0, c = 0; while ((i = x.nx.indexOf(t, i)) >= 0 && c < 20) { c++; i += t.length; } sc += c; });
+      if (x.k === 'Leçon') sc += 3; if (x.k === 'Glossaire') sc += 2;
+      r.push([sc, x]);
+    }
+    r.sort((a, b) => b[0] - a[0]);
+    const top = r.slice(0, 60);
+    $('#sres').innerHTML = `<p class="small muted">${r.length} résultat${r.length > 1 ? 's' : ''}${r.length > 60 ? ' (60 premiers affichés)' : ''}</p>` + (top.map(([, x]) => `<a class="sr" href="${x.href}" data-q="${esc(q)}"><span class="sk">${x.k} · ${esc(x.sub)}</span><b>${hl(x.t, terms)}</b><span class="sn">${snippet(x.txt, terms)}</span></a>`).join('') || '<p class="muted">Aucun résultat. Essaie un mot plus court ou un synonyme.</p>');
+  };
+  inp.oninput = run;
+  $('#sres').onclick = e => { const a = e.target.closest('.sr'); if (!a) return; const h = a.getAttribute('href'); if (h.startsWith('#l--')) PENDING = a.dataset.q; if (h === '#glossaire') GLOQ = a.querySelector('b').textContent; };
+  run(); if (!LASTQ) setTimeout(() => inp.focus(), 50);
+}
+function markPending() {
+  if (!PENDING) return;
+  const terms = PENDING.split(/\s+/).filter(t => t.length > 1); PENDING = '';
+  const root = main.querySelector('.prose'); if (!root || !terms.length) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => n.parentElement.closest('svg,script,style') ? 2 : 1 });
+  const nodes = []; let n; while ((n = w.nextNode())) nodes.push(n);
+  let first = null;
+  nodes.forEach(node => {
+    const s = node.nodeValue; const nn = NORM(s); const marks = [];
+    terms.forEach(t => { let i = 0; while ((i = nn.indexOf(t, i)) >= 0) { marks.push([i, i + t.length]); i += t.length; } });
+    if (!marks.length || nn.length !== s.length) return;
+    marks.sort((x, y) => x[0] - y[0]);
+    const frag = document.createDocumentFragment(); let last = 0;
+    marks.forEach(([x, y]) => { if (x < last) return; frag.appendChild(document.createTextNode(s.slice(last, x))); const mk = document.createElement('mark'); mk.className = 'hit'; mk.textContent = s.slice(x, y); frag.appendChild(mk); if (!first) first = mk; last = y; });
+    frag.appendChild(document.createTextNode(s.slice(last)));
+    node.parentNode.replaceChild(frag, node);
+  });
+  if (first) { PENDING_DONE = true; const d = first.closest('details'); if (d) d.open = true; setTimeout(() => first.scrollIntoView({ block: 'center' }), 60); }
+}
+
 function route() {
   stopAnim();
   const h = (location.hash.slice(1) || 'accueil'), p = h.split('--');
@@ -4440,9 +5742,11 @@ function route() {
     case 'schemas': schemas(); break;
     case 'schema': schemaView(p[1]); break;
     case 'decodeurs': decodeurs(); break;
+    case 'recherche': recherche(); break;
     default: home();
   }
-  if (p[0] !== 'cours' || !p[1]) window.scrollTo(0, 0);
+  if ((p[0] !== 'cours' || !p[1]) && !PENDING_DONE) window.scrollTo(0, 0);
+  PENDING_DONE = false;
 }
 window.addEventListener('hashchange', route);
 updXP(); route();
