@@ -12927,13 +12927,16 @@ function zoom2d(fig) {
   st.addEventListener('pointerup', end); st.addEventListener('pointercancel', e => pts.delete(e.pointerId));
 }
 function openFull(fig) {
-  const ph = document.createComment('dg'); fig.before(ph); fig._ph = ph;
+  const y = window.scrollY, ph = document.createElement('div'); ph.style.height = fig.offsetHeight + 'px'; fig.before(ph); fig._ph = ph; fig._sy = y;
   const ov = document.createElement('div'); ov.className = 'dg-ov'; document.body.appendChild(ov); ov.appendChild(fig);
   fig.classList.add('full'); document.documentElement.classList.add('noscroll');
+  Object.assign(document.body.style, { position: 'fixed', top: -y + 'px', left: '0', right: '0' });
   zoom2d(fig); if (fig._m3d) mount3d(fig);
 }
-function closeFull(fig) {
+function closeFull(fig, keep = true) {
   const ov = fig.parentElement; fig.classList.remove('full'); fig._ph.replaceWith(fig); ov.remove(); document.documentElement.classList.remove('noscroll');
+  Object.assign(document.body.style, { position: '', top: '', left: '', right: '' });
+  if (keep) window.scrollTo(0, fig._sy || 0);
   if (fig._z) { fig._z.s = 1; fig._z.x = fig._z.y = 0; fig._z.ap(); }
   if (fig._m3d) mount3d(fig);
 }
@@ -12957,7 +12960,7 @@ document.addEventListener('click', e => {
   selectPart(fig, id);
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { const f = document.querySelector('.dg.full'); if (f) closeFull(f); } });
-window.addEventListener('hashchange', () => { const f = document.querySelector('.dg.full'); if (f) closeFull(f); });
+window.addEventListener('hashchange', () => { const f = document.querySelector('.dg.full'); if (f) closeFull(f, false); });
 
 const PH = [
   ['1 · Admission', 'Soupape d\'admission ouverte. Le piston descend et aspire l\'air frais (avec le carburant en injection indirecte).'],
