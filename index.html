@@ -21068,6 +21068,20 @@ Règles :
   document.addEventListener('click', e => { const b = e.target.closest('[data-ask]'); if (b) { e.preventDefault(); window.openMecaChat(b.dataset.ask); } });
 })();
 
+/* Mise à jour automatique : compare la version servie à celle en mémoire */
+(function () {
+  var BUILD = '1795825894';
+  function check() {
+    if (!navigator.onLine || location.protocol.indexOf('http') !== 0) return;
+    fetch(location.pathname + '?nocache=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+      var m = t.match(/var BUILD = '(\d+)'/);
+      if (m && m[1] !== BUILD) location.replace(location.pathname + '?v=' + m[1] + location.hash);
+    }).catch(function () {});
+  }
+  check();
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') check(); });
+})();
+
 </script>
 </body>
 </html>
